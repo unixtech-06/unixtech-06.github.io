@@ -1,68 +1,371 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>My Coding Style Guidelines</title>
+            text-align: center;
+        }
+
+        section {
+            padding: 2rem;
+            background-color: #fff;
+            margin: 1rem 10%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            color: #000;
+            /* Set default text color for sections */
+        }
+
+        h2 {
+            border-bottom: 2px solid #333;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 0.5rem 0;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1rem 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: #ddd;
+        }
+
+        pre,
+        code {
+            display: block;
+            background-color: #daeffa;
+            /* Light blue background color */
+            color: black;
+            /* Black text color */
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: "Courier New", monospace;
+        }
+
+        .embedded-link {
+            display: inline-block;
+            padding: 10px 15px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            background-color: #f4f4f4;
+            color: #000;
+            text-decoration: none;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        .embedded-link:hover {
+            background-color: #e9e9e9;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .centered-text {
+            text-align: center;
+        }
+
+        code.inline {
+            display: inline-block;
+            background-color: #d5f0fd;
+            /* Lighter blue background color */
+            color: black;
+            /* Black text color */
+            border: 1px solid #ddd;
+            padding: 0.1px;
+            font-family: "Courier New", monospace;
+            margin: 0;
+            /* Remove any margin */
+        }
+
+        #menu-container {
+            position: relative;
+            background-color: silver;
+            /* シルバーに変更 */
+            color: black;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* 少し光沢を追加 */
+        }
+
+        #menu-bar {
+            cursor: pointer;
+        }
+
+        #menu-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: silver;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* 少し光沢を追加 */
+            padding: 20px;
+            text-align: right;
+            /* メニューコンテンツを右揃えにする */
+        }
+
+        /* メニューが表示されるときのスタイル */
+        #menu-content.show {
+            display: block;
+        }
+
+        /* "Self-taught KNF(Kernel Normal Form) Style Guide"のスタイル */
+        #style-guide-heading {
+            text-align: center;
+            /* テキストを中央揃えにする */
+            margin-bottom: 0;
+            /* h1の下部マージンを0に設定 */
+            font-family: 'Apple Braille', 'Arial', sans-serif;
+            /* Apple Braille フォントを追加 */
+        }
+    </style>
 </head>
+
 <body>
-    <h1>完全自己流 コーディングスタイルガイドライン</h1>
-    <p>特にカーネルソースファイルのためのコード記述方法について詳細な指示を提供しています。これらのガイドラインはユーザースペースコードにも推奨されています。</p>
+    <h1 id="style-guide-heading">Self-taught KNF(Kernel Normal Form) Style Guide</h1>
 
-    <h2>1. コメントとドキュメンテーション</h2>
-    <ul>
-        <li>単一行のコメントは明確で簡潔であるべきです。</li>
-        <li>複数行のコメントは完全な文章と段落として書かれるべきです。</li>
-        <li>主要なルーチンには、その機能を説明するコメントが必要です。</li>
-    </ul>
+    <!-- メニューバーとメニューの追加 -->
+    <div id="menu-container">
+        <div id="menu-bar" onclick="toggleMenu()">Menu &#9662;</div>
+        <div id="menu-content">
+            <h2 style="text-align: left;">
+                メイン
+            </h2>
+            <a href="https://unixtech.cc" style="text-decoration: underline; color: inherit; text-align: left;">
+                <p style="margin: 0;">ホームページ</p>
+            </a>
+        </div>
+    </div>
 
-    <h2>2. インクルードファイルとプロトタイピング</h2>
-    <ul>
-        <li>カーネルのインクルードファイルが最初にリストされ、次にネットワークのインクルードファイル、そして/usr/includeファイルが続きます。</li>
-        <li>非静的関数には関数プロトタイプが必要です。</li>
-        <li>ヘッダーファイルでは、C++の互換性のために__BEGIN_DECLS / __END_DECLSで関数プロトタイプを囲むべきです。</li>
-    </ul>
+    <script>
+        // メニューの表示・非表示を切り替える関数
+        function toggleMenu() {
+            var menuContent = document.getElementById("menu-content");
+            menuContent.classList.toggle("show");
+        }
+    </script>
 
-    <h2>3. フォーマットとスタイル</h2>
-    <ul>
-        <li>インデントには8文字のタブを使用し、二次インデントには4スペースを使用します。</li>
-        <li>複数のステートメントを含む制御文には括弧を使用します。</li>
-        <li>キーワード（if、while、for、return、switchなど）の後にはスペースを入れますが、関数名の後には入れません。</li>
-        <li>二項演算子の周りにはスペースを入れますが、単項演算子には入れません。</li>
-    </ul>
+    <section>
+        <h2>
+            概要
+        </h2>
+        <p>以下のコーディングスタイルはカーネルなどの低レベルコーディングに加え、ユーザースペースにおけるコーディングにも及ぶ。</p>
+    </section>
 
-    <h2>4. 変数と関数の宣言</h2>
-    <ul>
-        <li>構造体内の変数は、用途、サイズ、そしてアルファベット順に宣言されるべきです。</li>
-        <li>関数は、関数タイプを別の行に宣言するべきです。</li>
-        <li>新しいコードではregister指定子の使用を避けるべきです。</li>
-    </ul>
+    <!-- Existing content goes here -->
 
-    <h2>5. マクロと列挙</h2>
-    <ul>
-        <li>マクロは大文字で括弧付きであり、副作用を避けるべきです。</li>
-        <li>列挙値は大文字であるべきです。</li>
-    </ul>
+    <!-- New Session -->
 
-    <h2>6. コード実践</h2>
-    <ul>
-        <li>コマンドラインプログラムでオプションを解析するためにgetopt(3)を使用します。</li>
-        <li>必要でない限り、構造体タイプのためのtypedefの使用を避けます。</li>
-        <li>ヘッダーファイルにある場合、グローバル変数はexternとして宣言されるべきです。</li>
-        <li>可能な場合はリストにqueue(3)マクロを使用します。</li>
-    </ul>
+    <section>
+        <h2>C言語の規格</h2>
 
-    <h2>7. エラー処理とメモリ管理</h2>
-    <ul>
-        <li>エラー処理にはerr(3)およびwarn(3)関数群を使用します。</li>
-        <li>メモリ割り当て後にnullポインタをチェックします。</li>
-    </ul>
+        <p>C言語の規格はC23以上で記述することとする。最低でもC11以上を使用することを推奨する。間違ってもC99や、C89を使ってはならない。</p>
+    </section>
 
-    <h2>8. その他</h2>
-    <ul>
-        <li>コードは80列に収まるべきです。</li>
-        <li>行の終わりに空白を追加しないでください。</li>
-        <li>ANSI関数定義を使用し、変数の初期化に注意してください。</li>
-    </ul>
+    <section>
+        <h2>コメント・ドキュメント</h2>
 
-    </body>
+        <p>C++の"//"というスタイルではC言語では使わない。以下のようになる。また、日本語は使ってはならない。いかなる理由があっても、英語でコメントをすること。また、複雑でわかりにくい関数に関して、カーネルの記述でのみASCIIアートを使ってメモリの図を使ってコメントしても構わない。
+            </div>
+            </div>
+        </p>
+
+        <pre><code>
+        /*
+         * A very important one-line comment would be as follows. 
+         */
+
+        /* Most one-line comments look like this. */
+
+        /*
+         * This is what a multi-line comment looks like. Make it a real sentence.
+         * Fill it in so that it looks like a real paragraph. 
+         */
+    </code></pre>
+    </section>
+
+    <section>
+        <h2>ヘッダーファイルの扱いについて</h2>
+
+        <p>カーネル・インクルード・ファイル（<code class="inline">&lt;sys/*.h&gt;</code>）が最初にインクルードされる。
+            <code class="inline">&lt;sys/types.h&gt;</code>をインクルードする際、<code
+                class="inline">&lt;sys/cdefs.h&gt;</code>をインクルードする必要はない。(OpenBSD/NetBSD/FreeBSD/macOS)
+            また、<>内は非ローカル・インクルードである。clangの場合は<>にローカル・インクルードがあっても大丈夫だが、gccの場合、弾かれる。
+                    また、具体的なインクルードの順番として、<code class="inline">&lt;sys/param.h&gt;</code>または<code
+                        class="inline">&lt;sys/types.h&gt;</code>が最初に来る。<code
+                        class="inline">&lt;sys/types.h&gt;</code>には<code class="inline">&lt;sys/param.h&gt;</code>が含まれる。
+                    その次に必要であれば<code class="inline">&lt;sys/system.h&gt;</code>をインクルードする。そのあとは、アルファベット順に並べる。
+        </p>
+
+        <pre><code>
+            #include	&lt;sys/types.h&gt;  /* Non-local includes in	angle brackets.	*/
+            #include	&lt;sys/systm.h&gt;
+            #include	&lt;sys/endian.h&gt;
+            #include	&lt;sys/lock.h&gt;
+            #include	&lt;sys/queue.h&gt;
+        </code></pre>
+
+        <p2>ネットワークプログラムがある場合、それはカーネル・インクルード・ファイルの2番目にネットワーク・インクルード・ファイルを置く。</p2>
+
+        <pre><code>
+            #include &lt;net/if.h&gt;
+            #include &lt;net/if_dl.h&gt;
+            #include &lt;net/route.h&gt;
+            #include &lt;netinet/in.h&gt;
+            #include &lt;arpa/inet.h&gt;
+        </code></pre>
+
+        <p>
+            次に空白行があり、その後に/usr/includeファイルが続く。絶対に/usr/includeの前にカーネルやネットワークなどのインクルード・ファイルをインクルードしない。
+            グローバルパス名は<code class="inline">&lt;paths.h&gt;</code>で定義されている。 プログラムにローカルなパス名はローカルディレクトリの "pathnames.h" にある。
+        </p>
+
+        <pre><code>
+             #include &lt;paths.h&gt;
+        </code></pre>
+
+        <p>
+            ローカル・インクルード・ファイルの前にもう一つ空白を入れる。
+        </p>
+
+        <pre><code>
+            #include	"pathnames.h"	       /* Local	includes in double quotes. */
+        </code></pre>
+
+        <p>ヘッダーファイル内では、関数のプロトタイプを __BEGIN_DECLS と __END_DECLS の対応するペア内に配置すること。これにより、ヘッダーファイルがC++から使用可能になる。</p>
+
+    </section>
+
+    <section>
+        <h2>プライベート/パブリック 関数の扱い</h2>
+
+        <p>
+            プライベート関数のプロトタイプ（すなわち、他で使用されていない関数）は、最初のソースモジュールの先頭に配置する。
+            カーネルでは、プライベート関数は使用される前に定義されていればプロトタイプは必要ない。
+            ユーザースペースでは、1つのソースモジュールにローカルな関数は 'static' で宣言すべきである。
+            ただし、これはカーネルでは行われるべきではありません。なぜなら、それが行われるとカーネルデバッガの使用が不可能になるからである。
+        </p>
+
+        <p>
+            他のファイルから使用される関数は、関連するヘッダーファイルでプロトタイプ宣言さ
+            1つのモジュールで複数回使用される関数は、別のヘッダーファイルにまとめられる。例えば、"extern.h" のようなものである。
+            プロトタイプには型に関連する変数名を持たせてはいけない。すなわち、
+        </p>
+
+        <pre><code>
+            GOOD:
+            void	function(int);
+
+            BAD:
+            void	function(int a);
+        </code></pre>
+
+        <p>
+            プロトタイプには、関数名を整列させるためにタブの後に余分なスペースを入れても構わない。
+        </p>
+
+        <pre><code>
+            static int    add_numbers(int num1, int num2);
+            static double calculate_average(const double *numbers, int count);
+        </code></pre>
+
+        <p>関数名と引数リストの間にスペースを入れないこと。</p>
+
+        <pre><code>
+            GOOD:
+            void function(int arg1, char arg2);
+
+            BAD:
+            void function (int arg1, char arg2);
+        </code></pre>
+    </section>
+
+    <section>
+        <h2>マクロの使い</h2>
+
+        <p>
+            実装名前空間では#defineや宣言を行わない。これはアプリケーションインターフェースの実装にのみ使用する。
+            "unsafe" マクロ（副作用を持つもの）および定数のマクロの名前は全て大文字であるべき。
+            式のようなマクロの展開は、単一のトークンであるか、外側に括弧があるべき。
+            #define とマクロ名の間にはスペースまたはタブ文字を入れるが、ファイル内で一貫性を保つ。
+            マクロが関数のインライン展開である場合、関数名は全て小文字で、マクロは同じ名前を全て大文字で持つ。
+            バックスラッシュは右寄せにし、可読性を向上させる。
+            マクロが複合文をカプセル化する場合は、それをdoループで囲むことで、if文で安全に使用できるようにする。
+            最終的なセミコロンはマクロではなく、呼び出しで提供する。これはpretty-printersやエディタでの解析を容易にする。
+        </p>
+
+        <pre><code>
+            #define MACRO(x, y) do {                      \
+                variable = (x) + (y);                     \
+                (y) += 2;                                 \
+            } while (0)
+        </code></pre>
+
+        <p>
+            条件付きでコードがコンパイルされる場合、#ifdefまたは#ifが使用されると、対応する #endif または #else の後にコメントが追加されることがる。
+            これは読者が条件付きでコンパイルされたコード領域がどこで終わるかを簡単に判別できるようにするためである。
+            このコメントは、(主観的に)長い領域や20行を超える領域、または入れ子になった一連の #ifdef が読者を混乱させる可能性がある場合にのみ使用されるべきである。
+            コメントは #endif または #else から単一のスペースで区切られるべきである。
+            短い条件付きコンパイル領域の場合、閉じるコメントは使用しないこと。
+        </p>
+
+        <p>
+            #endif のコメントは、対応する #if または #ifdef で使用された式と一致するべべきである。
+            #else および #elif のコメントは、前の #if および/または #elif ステートメントで使用された式の否定と一致するべきである。
+            コメントでは、サブエクスプレッション "defined(FOO)" は "FOO" と略される。
+            コメントの目的で、"#ifndef FOO" は "#if !defined(FOO)" として扱われる。
+        </p>
+
+        <pre><code>
+            #ifdef KTRACE
+            #include &lt;sys/ktrace.h&gt;
+            #endif
+     
+            #ifdef COMPAT_43
+            /* A large region here, or other	conditional code. */
+            #else /*	!COMPAT_43 */
+            /* Or here. */
+            #endif /* COMPAT_43 */
+     
+            #ifndef COMPAT_43
+            /* Yet another large region here, or other conditional code. */
+            #else /*	COMPAT_43 */
+            /* Or here. */
+            #endif /* !COMPAT_43 */
+        </code></pre>
+
+    </section>
+
+    <section>
+        <h2>列挙型、構造体の扱い</h2>
+
+        <p>
+            列挙型の値はすべて大文字である。
+        </p>
+
+        <pre><code>
+            enum enumtype { ONE, TWO } et;
+        </code></pre>
+
+        <p>
+            識別子においては、キャメルケースやタイトルケースではなく、スネークケースの使用が好まれる。
+        </p>
+    </section>
+
+</body>
+
 </html>
