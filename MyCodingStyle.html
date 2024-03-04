@@ -629,17 +629,24 @@
             関数内で変数を宣言する際は、サイズ順（大きい順から小さい順）、そしてアルファベット順にソートするように宣言すること。
             複数の変数を1行に宣言しても問題はない。行がオーバーフローする場合は、タイプのキーワードを再利用すること。
             変数の初期化でコードを難読化しないように注意すること。初期化は慎重に行い、初期化には関数呼び出しを使用しないこと。
+            しかし、安全性の観点から必ず宣言と初期化は同時に行うこと。未定義動作などを発生させる原因となる。
         </p>
 
         <pre><code>
-            struct foo one, *two;
-            double three;
-            int *four, five;
-            char *six, seven, eight, nine, ten, eleven, twelve;
+        struct foo one = {}; /* Structure foo initialization */
+        struct foo *two = NULL; /* Pointer to foo initialization */
 
-            four = myfunction();
+        double three = 0.0; /* Double initialization */
+        int *four = NULL, five = 0; /* Pointer and integer initialization */
+        char *six = NULL, seven = '\0', eight = '\0', nine = '\0', ten = '\0', 
+            eleven = '\0', twelve = '\0'; /* Pointers and characters initialization */
+            
+        /* Initialize four with the return value of myfunction() */
+        four = myfunction();
+         
+        /* Add code to initialize one and two if necessary */
         </code></pre>
-
+        
         <p>
             しかし、以下の条件下では複数の変数を1行で宣言してはならない。
             1番最初のconst*はポインタ自体が示すメモリ上のアドレスを変更できないことを示す。つまり、'a'が指す文字列へのポインタが指す先のデータは変更できない。
