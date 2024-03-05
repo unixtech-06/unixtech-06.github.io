@@ -324,7 +324,7 @@
     </section>
 
     <section>
-        <h2>マクロの扱い</h2>
+        <h2>マクロの使い</h2>
 
         <p>
             実装名前空間では#defineや宣言を行わない。これはアサートの実装、または過去のコードの保守でのみ使用する。
@@ -646,21 +646,40 @@
          
         /* Add code to initialize one and two if necessary */
         </code></pre>
-        
+
         <p>
             しかし、以下の条件下では複数の変数を1行で宣言してはならない。
             1番最初のconst*はポインタ自体が示すメモリ上のアドレスを変更できないことを示す。つまり、'a'が指す文字列へのポインタが指す先のデータは変更できない。
             2番目のconstは、ポインタ変数'a'そのものが変更できないことを示している。つまり、'a'の指す値（アドレス）を変更できない。
+            [[deprecated]]この属性は、変数'a'が非推奨であることを示している。非推奨とは将来的なバージョンでサポートが終了する可能性があるということである。
             このとき、一度にaとbを宣言してしまうと、bは型をunsigned constしか持っておらず、最初のconstはaの宣言にしか適応されない。
         </p>
 
         <pre><code>
             GOOD:
-            unsigned int const *const a;
-            unsigned int const *const b;
+            unsigned int const *const a = NULL;
+            unsigned int const *const b = NULL;
 
             BAD:
             unsigned  const* const a, b;
+        </code></pre>
+
+        <p>
+            C23では、数値リテラルの可読性の向上させるため、アポストロフィを使って数字をグループ化することで、プログラマは大きな数字をより簡単に理解できる。
+            具体例として、数値が何バイトであるかを表すために、3桁ごとに区切ることが求められる。
+            これにより、数値のバイト数を直感的に理解しやすくなる。例えば、10'035.677'789は3桁ずつ区切ると10'035.677'789となり、これが3つの10進数桁で構成されていることがわかる。
+            同様に、16進数や2進数でも同様の考え方が適用される。
+        </p>
+
+        <pre><code>
+            /* Using digit separator for large decimal number */
+            long large_number = 10'035'677'789; 
+
+            /* Using digit separator for hexadecimal number */
+            int hex_number = 0xABCD'1234; 
+
+            /* Using digit separator for binary number */
+            int binary_number = 0b1100'1010'0101'0010; 
         </code></pre>
 
         <p>
