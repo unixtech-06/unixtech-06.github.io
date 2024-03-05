@@ -14,8 +14,8 @@
         }
 
         header {
-            background-color: #333;
-            color: #fff;
+            background-color: #2b4366;
+            color: white;
             text-align: center;
             padding: 1rem 0;
         }
@@ -24,7 +24,6 @@
             background-color: #2b4366;
             color: white;
             padding: 10px;
-            /* 任意のパディングを追加できます */
             text-align: center;
         }
 
@@ -34,7 +33,6 @@
             margin: 1rem 10%;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             color: #000;
-            /* Set default text color for sections */
         }
 
         h2 {
@@ -76,9 +74,7 @@
         code {
             display: block;
             background-color: #daeffa;
-            /* Light blue background color */
             color: black;
-            /* Black text color */
             border: 1px solid #ddd;
             padding: 10px;
             margin: 10px 0;
@@ -110,24 +106,24 @@
         code.inline {
             display: inline-block;
             background-color: #d5f0fd;
-            /* Lighter blue background color */
             color: black;
-            /* Black text color */
             border: 1px solid #ddd;
             padding: 0.1px;
             font-family: "Courier New", monospace;
             margin: 0;
-            /* Remove any margin */
         }
 
         #menu-container {
             position: relative;
             background-color: silver;
-            /* シルバーに変更 */
             color: black;
             padding: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-            /* 少し光沢を追加 */
+        }
+
+        #menu-content a {
+            margin-bottom: 10px;
+            display: block;
         }
 
         #menu-bar {
@@ -139,12 +135,11 @@
             position: absolute;
             top: 100%;
             left: 0;
+            /* 右揃えに変更 */
             background-color: silver;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-            /* 少し光沢を追加 */
             padding: 20px;
-            text-align: right;
-            /* メニューコンテンツを右揃えにする */
+            text-align: left;
         }
 
         /* メニューが表示されるときのスタイル */
@@ -152,14 +147,10 @@
             display: block;
         }
 
-        /* "Self-taught KNF(Kernel Normal Form) Style Guide"のスタイル */
         #style-guide-heading {
             text-align: center;
-            /* テキストを中央揃えにする */
             margin-bottom: 0;
-            /* h1の下部マージンを0に設定 */
             font-family: 'Apple Braille', 'Arial', sans-serif;
-            /* Apple Braille フォントを追加 */
         }
     </style>
 </head>
@@ -169,23 +160,31 @@
 
     <!-- メニューバーとメニューの追加 -->
     <div id="menu-container">
-        <div id="menu-bar" onclick="toggleMenu()">Menu &#9662;</div>
+        <div id="menu-bar">&#9776; Menu</div>
         <div id="menu-content">
-            <h2 style="text-align: left;">
-                メイン
-            </h2>
-            <a href="https://unixtech.cc" style="text-decoration: underline; color: inherit; text-align: left;">
-                <p style="margin: 0;">ホームページ</p>
-            </a>
+            <a href="https://unixtech.cc">Home</a>
+            <a href="#">About</a>
+            <a href="#">Services</a>
+            <a href="#">Contact</a>
         </div>
     </div>
 
     <script>
-        // メニューの表示・非表示を切り替える関数
-        function toggleMenu() {
-            var menuContent = document.getElementById("menu-content");
-            menuContent.classList.toggle("show");
-        }
+        document.addEventListener('DOMContentLoaded', function () {
+            var menuBar = document.getElementById('menu-bar');
+            var menuContent = document.getElementById('menu-content');
+
+            menuBar.addEventListener('click', function () {
+                menuContent.classList.toggle('show');
+            });
+
+            // クリック以外の領域をクリックした場合にメニューを閉じる
+            document.addEventListener('click', function (event) {
+                if (!menuBar.contains(event.target) && !menuContent.contains(event.target)) {
+                    menuContent.classList.remove('show');
+                }
+            });
+        });
     </script>
 
     <section>
@@ -214,17 +213,17 @@
         </p>
 
         <pre><code>
-    /*
-     * A very important one-line comment would be as follows. 
-     */
-
-    /* Most one-line comments look like this. */
-
-    /*
-     * This is what a multi-line comment looks like. Make it a real sentence.
-     * Fill it in so that it looks like a real paragraph. 
-     */
-    </code></pre>
+        /*
+         * A very important one-line comment would be as follows. 
+         */
+                
+        /* Most one-line comments look like this. */
+              
+        /*
+         * This is what a multi-line comment looks like. Make it a real sentence.
+         * Fill it in so that it looks like a real paragraph. 
+         */
+        </code></pre>
     </section>
 
     <section>
@@ -241,22 +240,22 @@
         </p>
 
         <pre><code>
-        #include	&lt;sys/types.h&gt;  /* Non-local includes in	angle brackets.	*/
-        #include	&lt;sys/systm.h&gt;
-        #include	&lt;sys/endian.h&gt;
-        #include	&lt;sys/lock.h&gt;
-        #include	&lt;sys/queue.h&gt;
-        </code></pre>
+                        #include	&lt;sys/types.h&gt;  /* Non-local includes in	angle brackets.	*/
+                        #include	&lt;sys/systm.h&gt;
+                        #include	&lt;sys/endian.h&gt;
+                        #include	&lt;sys/lock.h&gt;
+                        #include	&lt;sys/queue.h&gt;
+                        </code></pre>
 
         <p2>ネットワークプログラムがある場合、それはカーネル・インクルード・ファイルの2番目にネットワーク・インクルード・ファイルを置く。</p2>
 
         <pre><code>
-        #include &lt;net/if.h&gt;
-        #include &lt;net/if_dl.h&gt;
-        #include &lt;net/route.h&gt;
-        #include &lt;netinet/in.h&gt;
-        #include &lt;arpa/inet.h&gt;
-        </code></pre>
+                        #include &lt;net/if.h&gt;
+                        #include &lt;net/if_dl.h&gt;
+                        #include &lt;net/route.h&gt;
+                        #include &lt;netinet/in.h&gt;
+                        #include &lt;arpa/inet.h&gt;
+                        </code></pre>
 
         <p>
             次に空白行があり、その後に/usr/includeファイルが続く。絶対に/usr/includeの前にカーネルやネットワークなどのインクルード・ファイルをインクルードしない。
@@ -264,16 +263,16 @@
         </p>
 
         <pre><code>
-        #include &lt;paths.h&gt;
-        </code></pre>
+                        #include &lt;paths.h&gt;
+                        </code></pre>
 
         <p>
             ローカル・インクルード・ファイルの前にもう一つ空白を入れる。
         </p>
 
         <pre><code>
-        #include	"pathnames.h"	       /* Local	includes in double quotes. */
-        </code></pre>
+                        #include	"pathnames.h"	       /* Local	includes in double quotes. */
+                        </code></pre>
 
         <p>ヘッダーファイル内では、関数のプロトタイプを __BEGIN_DECLS と __END_DECLS の対応するペア内に配置すること。これにより、ヘッダーファイルがC++から使用可能になる。</p>
 
@@ -296,31 +295,31 @@
         </p>
 
         <pre><code>
-        GOOD:
-        void	function(int);
-
-        BAD:
-        void	function(int a);
-        </code></pre>
+                        GOOD:
+                        void	function(int);
+                
+                        BAD:
+                        void	function(int a);
+                        </code></pre>
 
         <p>
             プロトタイプには、関数名を整列させるためにタブの後に余分なスペースを入れても構わない。
         </p>
 
         <pre><code>
-        static int    add_numbers(int num1, int num2);
-        static double calculate_average(const double *numbers, int count);
-        </code></pre>
+                        static int    add_numbers(int num1, int num2);
+                        static double calculate_average(const double *numbers, int count);
+                        </code></pre>
 
         <p>関数名と引数リストの間にスペースを入れないこと。</p>
 
         <pre><code>
-        GOOD:
-        void function(int arg1, char arg2);
-
-        BAD:
-        void function (int arg1, char arg2);
-        </code></pre>
+                        GOOD:
+                        void function(int arg1, char arg2);
+                
+                        BAD:
+                        void function (int arg1, char arg2);
+                        </code></pre>
     </section>
 
     <section>
@@ -338,11 +337,11 @@
         </p>
 
         <pre><code>
-        #define MACRO(x, y) do {                      \
-                variable = (x) + (y);                     \
-                (y) += 2;                                 \
-        } while (0)
-        </code></pre>
+                        #define MACRO(x, y) do {                      \
+                                variable = (x) + (y);                     \
+                                (y) += 2;                                 \
+                        } while (0)
+                        </code></pre>
 
         <p>
             C23以上または新しいコードでは、constexprを使用する。defineは計算を行わず、コンパイル時にただ展開するだけだが、C23で追加されたconstexpr
@@ -350,11 +349,11 @@
         </p>
 
         <pre><code>
-        constexpr float f = 23.0f;
-        constexpr float g = 33.0f;
-        constexpr float h = f / g; // is not affected by fesetround() above
-        printf("%f\n", h);
-        </code></pre>
+                        constexpr float f = 23.0f;
+                        constexpr float g = 33.0f;
+                        constexpr float h = f / g; // is not affected by fesetround() above
+                        printf("%f\n", h);
+                        </code></pre>
 
         <p>
             ただし、以下の条件下でconstexprを使用することはできない。
@@ -396,22 +395,22 @@
         </p>
 
         <pre><code>
-        #ifdef KTRACE
-        #include &lt;sys/ktrace.h&gt;
-        #endif
-     
-        #ifdef COMPAT_43
-        /* A large region here, or other	conditional code. */
-        #else /*	!COMPAT_43 */
-        /* Or here. */
-        #endif /* COMPAT_43 */
-     
-        #ifndef COMPAT_43
-        /* Yet another large region here, or other conditional code. */
-        #else /*	COMPAT_43 */
-        /* Or here. */
-        #endif /* !COMPAT_43 */
-        </code></pre>
+                        #ifdef KTRACE
+                        #include &lt;sys/ktrace.h&gt;
+                        #endif
+                     
+                        #ifdef COMPAT_43
+                        /* A large region here, or other	conditional code. */
+                        #else /*	!COMPAT_43 */
+                        /* Or here. */
+                        #endif /* COMPAT_43 */
+                     
+                        #ifndef COMPAT_43
+                        /* Yet another large region here, or other conditional code. */
+                        #else /*	COMPAT_43 */
+                        /* Or here. */
+                        #endif /* !COMPAT_43 */
+                        </code></pre>
 
     </section>
 
@@ -423,8 +422,8 @@
         </p>
 
         <pre><code>
-        enum enumtype { ONE, TWO } et;
-        </code></pre>
+                        enum enumtype { ONE, TWO } et;
+                        </code></pre>
 
         <p>
             識別子においては、キャメルケースやタイトルケースではなく、スネークケースの使用が好まれる。
@@ -442,30 +441,30 @@
         </p>
 
         <pre><code>
-        struct foo {
-                struct foo *next;      /* List of active foo */
-                struct mumble amumble; /* Comment for mumble */
-                int bar;
-        };
-            
-        struct foo *foohead; /* Head of global foo list */
-        </code></pre>
+                        struct foo {
+                                struct foo *next;      /* List of active foo */
+                                struct mumble amumble; /* Comment for mumble */
+                                int bar;
+                        };
+                            
+                        struct foo *foohead; /* Head of global foo list */
+                        </code></pre>
 
         <p>
             可能であれば、独自のリストを実装する代わりに、queue(3) マクロを使用すること。したがって、前述の例は以下のように書き直す方が良い。
         </p>
 
         <pre><code>
-        #include &lt;sys/queue.h&gt;
-
-        struct foo {
-                LIST_ENTRY(foo) link; /* Queue macro glue for foo lists */
-                struct mumble amumble; /* Comment for mumble */
-                int bar;
-        };  
-
-        LIST_HEAD(, foo) foohead; /* Head of global foo list */
-        </code></pre>
+                        #include &lt;sys/queue.h&gt;
+                
+                        struct foo {
+                                LIST_ENTRY(foo) link; /* Queue macro glue for foo lists */
+                                struct mumble amumble; /* Comment for mumble */
+                                int bar;
+                        };  
+                
+                        LIST_HEAD(, foo) foohead; /* Head of global foo list */
+                        </code></pre>
 
         <p>
             構造体の型に対して typedef を使用することは避けること。
@@ -482,17 +481,17 @@
         </h2>
 
         <pre><code>
-        /*
-        * All major routines should have a comment briefly describing what
-        * they do. The comment before the "main" routine should describe
-        * what the program does.
-        */
-        int
-        main(int argc, char *argv[])
-        {
-            int aflag, bflag, ch, num;
-            const char *errstr;
-        </code></pre>
+                        /*
+                        * All major routines should have a comment briefly describing what
+                        * they do. The comment before the "main" routine should describe
+                        * what the program does.
+                        */
+                        int
+                        main(int argc, char *argv[])
+                        {
+                            int aflag, bflag, ch, num;
+                            const char *errstr;
+                        </code></pre>
 
         <p>
             一貫性のために、オプションの解析には getopt(3) を使用する。
@@ -502,28 +501,28 @@
         </p>
 
         <pre><code>
-            while ((ch = getopt(argc, argv, "abn:")) != -1) {
-                switch (ch) {   /* Indent the switch. */
-                    case 'a':   /* Don't indent the case. */
-                        aflag = 1;
-                        /* FALLTHROUGH */
-                    case 'b':
-                        bflag = 1;
-                        break;
-                    case 'n':
-                        num = strtonum(optarg, 0, INT_MAX, &errstr);
-                        if (errstr) {
-                            warnx("number is %s: %s", errstr, optarg);
-                            usage();
-                        }
-                        break;
-                    default:
-                        usage();
-                }
-            }
-            argc -= optind;
-            argv += optind;
-        </code></pre>
+                            while ((ch = getopt(argc, argv, "abn:")) != -1) {
+                                switch (ch) {   /* Indent the switch. */
+                                    case 'a':   /* Don't indent the case. */
+                                        aflag = 1;
+                                        /* FALLTHROUGH */
+                                    case 'b':
+                                        bflag = 1;
+                                        break;
+                                    case 'n':
+                                        num = strtonum(optarg, 0, INT_MAX, &errstr);
+                                        if (errstr) {
+                                            warnx("number is %s: %s", errstr, optarg);
+                                            usage();
+                                        }
+                                        break;
+                                    default:
+                                        usage();
+                                }
+                            }
+                            argc -= optind;
+                            argv += optind;
+                        </code></pre>
 
         <p>
             キーワードの後にスペースを使用すること（if、while、for、return、switch）。
@@ -531,31 +530,31 @@
         </p>
 
         <pre><code>
-            for (p = buf; *p != '\0'; ++p)
-                continue;
-            for (;;)
-                stmt;
-            for (;;) {
-                z = a + really + long + statement + that + needs +
-                  two + lines + gets + indented + four + spaces +
-                  on + the + second + and + subsequent + lines;
-            }
-            for (;;) {
-                if (cond)
-                    stmt;
-            }
-        </code></pre>
+                            for (p = buf; *p != '\0'; ++p)
+                                continue;
+                            for (;;)
+                                stmt;
+                            for (;;) {
+                                z = a + really + long + statement + that + needs +
+                                  two + lines + gets + indented + four + spaces +
+                                  on + the + second + and + subsequent + lines;
+                            }
+                            for (;;) {
+                                if (cond)
+                                    stmt;
+                            }
+                        </code></pre>
 
         <p>
             for ループの一部を空白のままにすることができる。
         </p>
 
         <pre><code>
-            for (; cnt < 15; cnt++) {
-                stmt1;
-                stmt2;
-            }
-        </code></pre>
+                            for (; cnt < 15; cnt++) {
+                                stmt1;
+                                stmt2;
+                            }
+                        </code></pre>
 
         <p>
             インデントは8文字のタブで、セカンドレベルのインデントは4スペースとする。
@@ -563,11 +562,11 @@
         </p>
 
         <pre><code>
-            while (cnt < 20)
-            z = a + really + long + statement + that + needs +
-              two + lines + gets + indented + four + spaces +
-              on + the + second + and + subsequent + lines;
-        </code></pre>
+                            while (cnt < 20)
+                            z = a + really + long + statement + that + needs +
+                              two + lines + gets + indented + four + spaces +
+                              on + the + second + and + subsequent + lines;
+                        </code></pre>
 
         <p>
             行末にはホワイトスペースを追加しないこと。インデントを形成するためには、タブに続いてスペースを使用する。
@@ -575,14 +574,14 @@
         </p>
 
         <pre><code>
-            if (test)
-                stmt;
-            else if (bar) {
-                stmt;
-                stmt;
-            } else
-                stmt;
-        </code></pre>
+                            if (test)
+                                stmt;
+                            else if (bar) {
+                                stmt;
+                                stmt;
+                            } else
+                                stmt;
+                        </code></pre>
 
         <p>
             関数名の後にスペースを使用しないこと。カンマの後にはスペースを使用すること。
@@ -590,40 +589,40 @@
         </p>
 
         <pre><code>
-            if ((error = function(a1, a2)))
-                exit(error);
-        </code></pre>
+                            if ((error = function(a1, a2)))
+                                exit(error);
+                        </code></pre>
 
         <p>
             単項演算子にはスペースは不要で、二項演算子にはスペースが必要である。
         </p>
 
         <pre><code>
-            a = b->c[0] + ~d == (e || f) || g && h ? i : j >> 1;
-            k = !(l & FLAGS);
-        </code></pre>
+                            a = b->c[0] + ~d == (e || f) || g && h ? i : j >> 1;
+                            k = !(l & FLAGS);
+                        </code></pre>
 
         <p>
             exitは成功時には0、エラー時には非ゼロである必要がある。
         </p>
 
         <pre><code>
-            /*
-            * Avoid obvious comments such as
-            * "Exit 0 on success."
-            */
-            exit(0);
-        </code></pre>
+                            /*
+                            * Avoid obvious comments such as
+                            * "Exit 0 on success."
+                            */
+                            exit(0);
+                        </code></pre>
 
         <p>
             関数の前には、その関数を先行する行に型を置く必要がある。
         </p>
 
         <pre><code>
-            static char *
-            function(int a1, int a2, float fl, int a4)
-            {
-        </code></pre>
+                            static char *
+                            function(int a1, int a2, float fl, int a4)
+                            {
+                        </code></pre>
 
         <p>
             関数内で変数を宣言する際は、サイズ順（大きい順から小さい順）、そしてアルファベット順にソートするように宣言すること。
@@ -633,19 +632,19 @@
         </p>
 
         <pre><code>
-        struct foo one = {}; /* Structure foo initialization */
-        struct foo *two = NULL; /* Pointer to foo initialization */
-
-        double three = 0.0; /* Double initialization */
-        int *four = NULL, five = 0; /* Pointer and integer initialization */
-        char *six = NULL, seven = '\0', eight = '\0', nine = '\0', ten = '\0', 
-            eleven = '\0', twelve = '\0'; /* Pointers and characters initialization */
-            
-        /* Initialize four with the return value of myfunction() */
-        four = myfunction();
-         
-        /* Add code to initialize one and two if necessary */
-        </code></pre>
+                        struct foo one = {}; /* Structure foo initialization */
+                        struct foo *two = NULL; /* Pointer to foo initialization */
+                
+                        double three = 0.0; /* Double initialization */
+                        int *four = NULL, five = 0; /* Pointer and integer initialization */
+                        char *six = NULL, seven = '\0', eight = '\0', nine = '\0', ten = '\0', 
+                            eleven = '\0', twelve = '\0'; /* Pointers and characters initialization */
+                            
+                        /* Initialize four with the return value of myfunction() */
+                        four = myfunction();
+                         
+                        /* Add code to initialize one and two if necessary */
+                        </code></pre>
 
         <p>
             しかし、以下の条件下では複数の変数を1行で宣言してはならない。
@@ -656,13 +655,13 @@
         </p>
 
         <pre><code>
-            GOOD:
-            unsigned int const *const a = NULL;
-            unsigned int const *const b = NULL;
-
-            BAD:
-            unsigned  const* const a, b;
-        </code></pre>
+                            GOOD:
+                            unsigned int const *const a = NULL;
+                            unsigned int const *const b = NULL;
+                
+                            BAD:
+                            unsigned  const* const a, b;
+                        </code></pre>
 
         <p>
             C23では、数値リテラルの可読性の向上させるため、アポストロフィを使って数字をグループ化することで、プログラマは大きな数字をより簡単に理解できる。
@@ -672,15 +671,15 @@
         </p>
 
         <pre><code>
-            /* Using digit separator for large decimal number */
-            long large_number = 10'035'677'789; 
-
-            /* Using digit separator for hexadecimal number */
-            int hex_number = 0xABCD'1234; 
-
-            /* Using digit separator for binary number */
-            int binary_number = 0b1100'1010'0101'0010; 
-        </code></pre>
+                            /* Using digit separator for large decimal number */
+                            long large_number = 10'035'677'789; 
+                
+                            /* Using digit separator for hexadecimal number */
+                            int hex_number = 0xABCD'1234; 
+                
+                            /* Using digit separator for binary number */
+                            int binary_number = 0b1100'1010'0101'0010; 
+                        </code></pre>
 
         <p>
             関数内で関数を宣言しないこと。
@@ -775,12 +774,12 @@
         <p>noreturn: 関数が決して戻ってこないことを示す。</p>
 
         <pre><code>
-            int
-            main(int argc, [[maybe_unused]]char *argv[argc + 1])
-            {
-                return 0;
-            }
-        </code></pre>
+                            int
+                            main(int argc, [[maybe_unused]]char *argv[argc + 1])
+                            {
+                                return 0;
+                            }
+                        </code></pre>
 
         <h2>typeofとtypeof_unqual</h2>
 
@@ -805,55 +804,55 @@
         </p>
 
         <pre><code>
-            int 
-            main(void) 
-            {
-                _BitInt(8) byte; 
-                _BitInt(16) halfWord; 
-                _BitInt(32) word; 
-            
-                byte = 255; 
-                halfWord = 65535; 
-                word = 4294967295; 
-            
-                printf("Byte: %d\n", byte);
-                printf("Half Word: %d\n", halfWord);
-                printf("Word: %d\n", word);
-            
-                return 0;
-            }
-        </code></pre>
+                            int 
+                            main(void) 
+                            {
+                                _BitInt(8) byte; 
+                                _BitInt(16) halfWord; 
+                                _BitInt(32) word; 
+                            
+                                byte = 255; 
+                                halfWord = 65535; 
+                                word = 4294967295; 
+                            
+                                printf("Byte: %d\n", byte);
+                                printf("Half Word: %d\n", halfWord);
+                                printf("Word: %d\n", word);
+                            
+                                return 0;
+                            }
+                        </code></pre>
 
         <h2>型推論</h2>
 
         <p>
             型推論( Type inference; TI )とは、宣言がその初期化子として使用される式から型を推論することを可能にする機能である。
             N3007提案では、auto i = 123L; の様に「型」の部分に auto と書くと初期化子（この場合は 123L）から変数（この場合は i）の型（この場合は long）
-            を言語処理系が推論するという構文である（概ねC++と同じですが、C++には参照やラムダ式があるので若干事情が異なる）。 
+            を言語処理系が推論するという構文である（概ねC++と同じですが、C++には参照やラムダ式があるので若干事情が異なる）。
             auto は今までもキーワードであったが、（静的変数に対して）「自動変数」を宣言することを表すもので、省略可能であった。
         </p>
 
         <pre><code>
-            int 
-            main(void) 
-            {
-                auto fname = "/etc/hosts";
-                auto file = fopen(fname, "r");
-            
-                if (file == NULL) {
-                    perror(fname);
-                    return 1;
-                }
-            
-                char line[256];
-                for (auto i = 1; fgets(line, sizeof(line), file); i++) {
-                    printf("%03d: %s", i, line);
-                }
-            
-                fclose(file);
-                return 0;
-            }
-        </code></pre>
+                            int 
+                            main(void) 
+                            {
+                                auto fname = "/etc/hosts";
+                                auto file = fopen(fname, "r");
+                            
+                                if (file == NULL) {
+                                    perror(fname);
+                                    return 1;
+                                }
+                            
+                                char line[256];
+                                for (auto i = 1; fgets(line, sizeof(line), file); i++) {
+                                    printf("%03d: %s", i, line);
+                                }
+                            
+                                fclose(file);
+                                return 0;
+                            }
+                        </code></pre>
 
     </section>
 </body>

@@ -1,34 +1,234 @@
-<!DOCTYPE html> <html lang="en"> <head>
-    <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Ryosuke's 
-      Portfolio</title> <link rel="stylesheet" href="styles.css">
-  </head> <body>
-    <header>
-      <h1>Ryosuke's Portfolio</h1>
-    </header> <section class="favorites">
-      <h2>Favorite Operating System</h2> <ul>
-        <li>Gentoo</li> <li>OpenBSD</li>
-      </ul>
-    </section> <section class="interests">
-      <h2>Favorite Things</h2>
-      <p>I enjoy coding and listening to music, among other things. My favorite artist is Gaeul from IVE, a K-pop 
-      idol.</p>
-    </section> <section class="learning">
-      <h2>Currently Learning</h2> <ul>
-          <li>C/C++</li> <li>Common Lisp</li> <li></li>
-      </ul>
-    </section>
-    <!-- MyCodingStyle セクション内 -->
-    <section class="coding-style">
-      <h2>MyCodingStyle</h2>
-      <ul>
-        <li><a href="./MyCodingStyle.html" class="embedded-link">C/C++</a></li>
-        <!-- 他の言語やスタイルガイドのリンクもここに追加できます -->
-      </ul>
-    </section>
+<!DOCTYPE html>
+<html lang="en">
 
-    <section class="about">
-      <p>I'm a passionate individual from Japan with a keen interest in Computer Science. While I primarily communicate in 
-      Japanese, I have a basic understanding of English and am continually working to improve it.</p>
-    </section> <footer>
-      <a href="https://github.com/unixtech-06">Tech Stuffs on GitHub</a>
-    </footer> </body> </html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Self-taught KNF(Kernel Normal Form) スタイル　ガイド</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #2b4366;
+      color: white;
+      text-align: center;
+      padding: 1rem 0;
+    }
+
+    h1 {
+      padding: 5px;
+      /* Adjusted padding for the blue line */
+      margin-bottom: 5px;
+      /* Added margin-bottom for spacing */
+    }
+
+    #menu-container {
+      position: relative;
+      background-color: silver;
+      color: black;
+      padding: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+      text-align: left;
+      height: 100%;
+      /* 追加: メニューバーの高さを設定 */
+    }
+
+    #menu-content {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: silver;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+      padding: 20px;
+      text-align: left;
+      transition: opacity 0.3s, visibility 0.3s;
+      opacity: 0;
+      visibility: hidden;
+      display: flex;
+      flex-direction: row;
+      /* メインを横並びにするために追加 */
+      align-items: center;
+      /* 垂直方向の中央揃え */
+      justify-content: space-between;
+      /* 要素間のスペースを均等に分配 */
+    }
+
+    #menu-content a {
+      margin-bottom: 10px;
+      display: block;
+    }
+
+
+    #menu-content.show {
+      display: block;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    section {
+      padding: 2rem;
+      background-color: #fff;
+      margin: 1rem 10%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      color: #000;
+    }
+
+    h2 {
+      border-bottom: 2px solid #333;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      padding: 0.5rem 0;
+    }
+
+    footer {
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 1rem 0;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+
+    a {
+      color: #fff;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    a:hover {
+      color: #ddd;
+    }
+
+    pre,
+    code {
+      display: block;
+      background-color: #daeffa;
+      color: black;
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin: 10px 0;
+      font-family: "Courier New", monospace;
+    }
+
+    .embedded-link {
+      display: inline-block;
+      padding: 10px 15px;
+      margin: 5px 0;
+      border: 1px solid #ddd;
+      background-color: #f4f4f4;
+      color: #000;
+      text-decoration: none;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .embedded-link:hover {
+      background-color: #e9e9e9;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .centered-text {
+      text-align: center;
+    }
+
+    code.inline {
+      display: inline-block;
+      background-color: #d5f0fd;
+      color: black;
+      border: 1px solid #ddd;
+      padding: 0.1px;
+      font-family: "Courier New", monospace;
+      margin: 0;
+    }
+
+    #style-guide-heading {
+      text-align: center;
+      margin-bottom: 0;
+      font-family: 'Apple Braille', 'Arial', sans-serif;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Ryosuke's Portfolio</h1>
+  </header>
+  <div id="menu-container">
+    <div id="menu-bar">&#9776; Menu</div>
+    <div id="menu-content">
+      <a href="https://unixtech.cc">Home</a>
+      <a href="https://unixtech.cc/MyCodingStyle.html">Self-taught KNF</a>
+<!--            <a href="#">Services</a>
+      <a href="#">Contact</a> -->
+      </div>
+      </div>
+      <section class="favorites">
+        <h2>Favorite Operating System</h2>
+        <ul>
+          <li>Gentoo</li>
+          <li>OpenBSD</li>
+        </ul>
+      </section>
+      <section class="interests">
+        <h2>Favorite Things</h2>
+        <p>I enjoy coding and listening to music, among other things. My favorite artist is Gaeul from IVE, a K-pop idol.
+        </p>
+      </section>
+      <section class="learning">
+        <h2>Currently Learning</h2>
+        <ul>
+          <li>C/C++</li>
+          <li>Common Lisp</li>
+        </ul>
+      </section>
+      <section class="coding-style">
+        <h2>MyCodingStyle</h2>
+        <ul>
+          <li><a href="./MyCodingStyle.html" class="embedded-link">C/C++</a></li>
+        </ul>
+      </section>
+      
+      <section class="about">
+        <p>I'm a passionate individual from Japan with a keen interest in Computer Science. While I primarily communicate
+          in Japanese, I have a basic understanding of English and am continually working to improve it.</p>
+      </section>
+      <footer>
+        <a href="https://github.com/unixtech-06">Tech Stuffs on GitHub</a>
+      </footer>
+      
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          var menuBar = document.getElementById('menu-bar');
+          var menuContent = document.getElementById('menu-content');
+
+          menuBar.addEventListener('click', function () {
+            menuContent.classList.toggle('show');
+          });
+
+          // クリック以外の領域をクリックした場合にメニューを閉じる
+          document.addEventListener('click', function (event) {
+            if (!menuBar.contains(event.target) && !menuContent.contains(event.target)) {
+              menuContent.classList.remove('show');
+            }
+          });
+        });
+      </script>
+      </body>
+      
+      </html>
