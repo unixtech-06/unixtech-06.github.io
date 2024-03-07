@@ -663,11 +663,11 @@ body {
 
 	    <pre><code>
 	struct foo one = {}; /* Structure foo initialization */
-	struct foo *two = NULL; /* Pointer to foo initialization */
+	struct foo *two = nullptr; /* Pointer to foo initialization */
 
 	double three = 0.0; /* Double initialization */
-	int *four = NULL, five = 0; /* Pointer and integer initialization */
-	char *six = NULL, seven = '\0', eight = '\0', nine = '\0', ten = '\0',
+	int *four = nullptr, five = 0; /* Pointer and integer initialization */
+	char *six = nullptr, seven = '\0', eight = '\0', nine = '\0', ten = '\0',
 	eleven = '\0', twelve = '\0'; /* Pointers and characters initialization */
 
 	/* Initialize four with the return value of myfunction() */
@@ -686,8 +686,8 @@ body {
 
 	    <pre><code>
 	GOOD:
-	unsigned int const *const a = NULL;
-	unsigned int const *const b = NULL;
+	unsigned int const *const a = nullptr;
+	unsigned int const *const b = nullptr;
 
 	BAD:
 	unsigned  const* const a, b;
