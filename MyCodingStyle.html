@@ -1,860 +1,965 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Self-taught KNF(Kernel Normal Form) スタイル　ガイド</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #2b4366;
-            color: white;
-            text-align: center;
-            padding: 1rem 0;
-        }
-
-        h1 {
-            background-color: #2b4366;
-            color: white;
-            padding: 10px;
-            text-align: center;
-        }
-
-        section {
-            padding: 2rem;
-            background-color: #fff;
-            margin: 1rem 10%;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            color: #000;
-        }
-
-        h2 {
-            border-bottom: 2px solid #333;
-            padding-bottom: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        li {
-            padding: 0.5rem 0;
-        }
-
-        footer {
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            padding: 1rem 0;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-
-        a {
-            color: #fff;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        a:hover {
-            color: #ddd;
-        }
-
-        pre,
-        code {
-            display: block;
-            background-color: #daeffa;
-            color: black;
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin: 10px 0;
-            font-family: "Courier New", monospace;
-        }
-
-        .embedded-link {
-            display: inline-block;
-            padding: 10px 15px;
-            margin: 5px 0;
-            border: 1px solid #ddd;
-            background-color: #f4f4f4;
-            color: #000;
-            text-decoration: none;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s, box-shadow 0.3s;
-        }
-
-        .embedded-link:hover {
-            background-color: #e9e9e9;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        .centered-text {
-            text-align: center;
-        }
-
-        code.inline {
-            display: inline-block;
-            background-color: #d5f0fd;
-            color: black;
-            border: 1px solid #ddd;
-            padding: 0.1px;
-            font-family: "Courier New", monospace;
-            margin: 0;
-        }
-
-        #menu-container {
-            position: relative;
-            background-color: silver;
-            color: black;
-            padding: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-        }
-
-        #menu-content a {
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        #menu-bar {
-            cursor: pointer;
-        }
-
-        #menu-content {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            /* 右揃えに変更 */
-            background-color: silver;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-            padding: 20px;
-            text-align: left;
-        }
-
-        /* メニューが表示されるときのスタイル */
-        #menu-content.show {
-            display: block;
-        }
-
-        #style-guide-heading {
-            text-align: center;
-            margin-bottom: 0;
-            font-family: 'Apple Braille', 'Arial', sans-serif;
-        }
-    </style>
-</head>
-
-<body>
-    <h1 id="style-guide-heading">Self-taught KNF(Kernel Normal Form) Style Guide</h1>
-
-    <!-- メニューバーとメニューの追加 -->
-    <div id="menu-container">
-        <div id="menu-bar">&#9776; Menu</div>
-        <div id="menu-content">
-            <a href="https://unixtech.cc">Home</a>
-            <a href="https://unixtech.cc/MyCodingStyle.html">Self-taught KNF</a>
-<!--            <a href="#">Services</a>
-            <a href="#">Contact</a> -->
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var menuBar = document.getElementById('menu-bar');
-            var menuContent = document.getElementById('menu-content');
-
-            menuBar.addEventListener('click', function () {
-                menuContent.classList.toggle('show');
-            });
-
-            // クリック以外の領域をクリックした場合にメニューを閉じる
-            document.addEventListener('click', function (event) {
-                if (!menuBar.contains(event.target) && !menuContent.contains(event.target)) {
-                    menuContent.classList.remove('show');
-                }
-            });
-        });
-    </script>
-
-    <section>
-        <h2>
-            概要
-        </h2>
-        <p>以下のコーディングスタイルはカーネルなどの低レベルコーディングに加え、ユーザースペースにおけるコーディングにも及ぶ。</p>
-    </section>
-
-    <!-- Existing content goes here -->
-
-    <!-- New Session -->
-
-    <section>
-        <h2>C言語の規格</h2>
-
-        <p>C言語の規格はC23以上で記述することとする。最低でもC11以上を使用することを推奨する。間違ってもC99や、C89を使ってはならない。</p>
-    </section>
-
-    <section>
-        <h2>コメント・ドキュメント</h2>
-
-        <p>C++の"//"というスタイルではC言語では使わない。以下のようになる。また、日本語は使ってはならない。いかなる理由があっても、英語でコメントをすること。また、複雑でわかりにくい関数に関して、カーネルの記述でのみASCIIアートを使ってメモリの図を使ってコメントしても構わない。
-            </div>
-            </div>
-        </p>
-
-        <pre><code>
-        /*
-         * A very important one-line comment would be as follows. 
-         */
-                
-        /* Most one-line comments look like this. */
-              
-        /*
-         * This is what a multi-line comment looks like. Make it a real sentence.
-         * Fill it in so that it looks like a real paragraph. 
-         */
-        </code></pre>
-    </section>
-
-    <section>
-        <h2>ヘッダーファイルの扱いについて</h2>
-
-        <p>カーネル・インクルード・ファイル（<code class="inline">&lt;sys/*.h&gt;</code>）が最初にインクルードされる。
-            <code class="inline">&lt;sys/types.h&gt;</code>をインクルードする際、<code
-                class="inline">&lt;sys/cdefs.h&gt;</code>をインクルードする必要はない。(OpenBSD/NetBSD/FreeBSD/macOS)
-            また、<>内は非ローカル・インクルードである。clangの場合は<>にローカル・インクルードがあっても大丈夫だが、gccの場合、弾かれる。
-                    また、具体的なインクルードの順番として、<code class="inline">&lt;sys/param.h&gt;</code>または<code
-                        class="inline">&lt;sys/types.h&gt;</code>が最初に来る。<code
-                        class="inline">&lt;sys/types.h&gt;</code>には<code class="inline">&lt;sys/param.h&gt;</code>が含まれる。
-                    その次に必要であれば<code class="inline">&lt;sys/system.h&gt;</code>をインクルードする。そのあとは、アルファベット順に並べる。
-        </p>
-
-        <pre><code>
-                        #include	&lt;sys/types.h&gt;  /* Non-local includes in	angle brackets.	*/
-                        #include	&lt;sys/systm.h&gt;
-                        #include	&lt;sys/endian.h&gt;
-                        #include	&lt;sys/lock.h&gt;
-                        #include	&lt;sys/queue.h&gt;
-                        </code></pre>
-
-        <p2>ネットワークプログラムがある場合、それはカーネル・インクルード・ファイルの2番目にネットワーク・インクルード・ファイルを置く。</p2>
-
-        <pre><code>
-                        #include &lt;net/if.h&gt;
-                        #include &lt;net/if_dl.h&gt;
-                        #include &lt;net/route.h&gt;
-                        #include &lt;netinet/in.h&gt;
-                        #include &lt;arpa/inet.h&gt;
-                        </code></pre>
-
-        <p>
-            次に空白行があり、その後に/usr/includeファイルが続く。絶対に/usr/includeの前にカーネルやネットワークなどのインクルード・ファイルをインクルードしない。
-            グローバルパス名は<code class="inline">&lt;paths.h&gt;</code>で定義されている。 プログラムにローカルなパス名はローカルディレクトリの "pathnames.h" にある。
-        </p>
-
-        <pre><code>
-                        #include &lt;paths.h&gt;
-                        </code></pre>
-
-        <p>
-            ローカル・インクルード・ファイルの前にもう一つ空白を入れる。
-        </p>
-
-        <pre><code>
-                        #include	"pathnames.h"	       /* Local	includes in double quotes. */
-                        </code></pre>
-
-        <p>ヘッダーファイル内では、関数のプロトタイプを __BEGIN_DECLS と __END_DECLS の対応するペア内に配置すること。これにより、ヘッダーファイルがC++から使用可能になる。</p>
-
-    </section>
-
-    <section>
-        <h2>プライベート/パブリック 関数の扱い</h2>
-
-        <p>
-            プライベート関数のプロトタイプ（すなわち、他で使用されていない関数）は、最初のソースモジュールの先頭に配置する。
-            カーネルでは、プライベート関数は使用される前に定義されていればプロトタイプは必要ない。
-            ユーザースペースでは、1つのソースモジュールにローカルな関数は 'static' で宣言すべきである。
-            ただし、これはカーネルでは行われるべきではありません。なぜなら、それが行われるとカーネルデバッガの使用が不可能になるからである。
-        </p>
-
-        <p>
-            他のファイルから使用される関数は、関連するヘッダーファイルでプロトタイプ宣言さ
-            1つのモジュールで複数回使用される関数は、別のヘッダーファイルにまとめられる。例えば、"extern.h" のようなものである。
-            プロトタイプには型に関連する変数名を持たせてはいけない。すなわち、
-        </p>
-
-        <pre><code>
-                        GOOD:
-                        void	function(int);
-                
-                        BAD:
-                        void	function(int a);
-                        </code></pre>
-
-        <p>
-            プロトタイプには、関数名を整列させるためにタブの後に余分なスペースを入れても構わない。
-        </p>
-
-        <pre><code>
-                        static int    add_numbers(int num1, int num2);
-                        static double calculate_average(const double *numbers, int count);
-                        </code></pre>
-
-        <p>関数名と引数リストの間にスペースを入れないこと。</p>
-
-        <pre><code>
-                        GOOD:
-                        void function(int arg1, char arg2);
-                
-                        BAD:
-                        void function (int arg1, char arg2);
-                        </code></pre>
-    </section>
-
-    <section>
-        <h2>マクロの使い</h2>
-
-        <p>
-            実装名前空間では#defineや宣言を行わない。これはアサートの実装、または過去のコードの保守でのみ使用する。
-            "unsafe" マクロ（副作用を持つもの）および定数のマクロの名前は全て大文字であるべき。
-            式のようなマクロの展開は、単一のトークンであるか、外側に括弧があるべき。
-            #define とマクロ名の間にはスペースまたはタブ文字を入れるが、ファイル内で一貫性を保つ。
-            マクロが関数のインライン展開である場合、関数名は全て小文字で、マクロは同じ名前を全て大文字で持つ。
-            バックスラッシュは右寄せにし、可読性を向上させる。
-            マクロが複合文をカプセル化する場合は、それをdoループで囲むことで、if文で安全に使用できるようにする。
-            最終的なセミコロンはマクロではなく、呼び出しで提供する。これはpretty-printersやエディタでの解析を容易にする。
-        </p>
-
-        <pre><code>
-                        #define MACRO(x, y) do {                      \
-                                variable = (x) + (y);                     \
-                                (y) += 2;                                 \
-                        } while (0)
-                        </code></pre>
-
-        <p>
-            C23以上または新しいコードでは、constexprを使用する。defineは計算を行わず、コンパイル時にただ展開するだけだが、C23で追加されたconstexpr
-            はコンパイル時に一回計算されるため、未定義動作が起こりにくい。
-        </p>
-
-        <pre><code>
-                        constexpr float f = 23.0f;
-                        constexpr float g = 33.0f;
-                        constexpr float h = f / g; // is not affected by fesetround() above
-                        printf("%f\n", h);
-                        </code></pre>
-
-        <p>
-            ただし、以下の条件下でconstexprを使用することはできない。
-        </p>
-
-        <li>
-            ポインタ（ヌルポインタは可）
-        </li>
-
-        <li>
-            可変修飾型
-        </li>
-
-        <li>
-            アトミック型
-        </li>
-
-        <li>
-            volatile型
-        </li>
-
-        <li>
-            restrictポインタ
-        </li>
-
-        <p>
-            条件付きでコードがコンパイルされる場合、#ifdefまたは#ifが使用されると、対応する #endif または #else の後にコメントが追加されることがる。
-            これは読者が条件付きでコンパイルされたコード領域がどこで終わるかを簡単に判別できるようにするためである。
-            このコメントは、(主観的に)長い領域や20行を超える領域、または入れ子になった一連の #ifdef が読者を混乱させる可能性がある場合にのみ使用されるべきである。
-            コメントは #endif または #else から単一のスペースで区切られるべきである。
-            短い条件付きコンパイル領域の場合、閉じるコメントは使用しないこと。
-        </p>
-
-        <p>
-            #endif のコメントは、対応する #if または #ifdef で使用された式と一致するべべきである。
-            #else および #elif のコメントは、前の #if および/または #elif ステートメントで使用された式の否定と一致するべきである。
-            コメントでは、サブエクスプレッション "defined(FOO)" は "FOO" と略される。
-            コメントの目的で、"#ifndef FOO" は "#if !defined(FOO)" として扱われる。
-        </p>
-
-        <pre><code>
-                        #ifdef KTRACE
-                        #include &lt;sys/ktrace.h&gt;
-                        #endif
-                     
-                        #ifdef COMPAT_43
-                        /* A large region here, or other	conditional code. */
-                        #else /*	!COMPAT_43 */
-                        /* Or here. */
-                        #endif /* COMPAT_43 */
-                     
-                        #ifndef COMPAT_43
-                        /* Yet another large region here, or other conditional code. */
-                        #else /*	COMPAT_43 */
-                        /* Or here. */
-                        #endif /* !COMPAT_43 */
-                        </code></pre>
-
-    </section>
-
-    <section>
-        <h2>列挙型、構造体の扱い</h2>
-
-        <p>
-            列挙型の値はすべて大文字である。
-        </p>
-
-        <pre><code>
-                        enum enumtype { ONE, TWO } et;
-                        </code></pre>
-
-        <p>
-            識別子においては、キャメルケースやタイトルケースではなく、スネークケースの使用が好まれる。
-        </p>
-
-        <P>
-            変数を構造体で宣言する際には、使用目的、次にサイズ（大きい順から小さい順）、そしてアルファベット順にソートして宣言すること。
-            通常、最初のカテゴリは適用されないが、例外もある。それぞれに独自の行を使用する。
-            最初の単語の後にはタブを挿入し、例えば 'int^Ix;' や 'struct^Ifoo *x;' のようにする。（注：^Iはタブ文字を表している。）
-        </P>
-
-        <p>
-            メジャーな構造体は、それらが使用されるファイルの先頭に宣言するか、複数のソースファイルで使用される場合は別個のヘッダーファイルに宣言する。
-            構造体の使用は別個の宣言で行い、ヘッダーファイルで宣言されている場合は "extern" を使用する。
-        </p>
-
-        <pre><code>
-                        struct foo {
-                                struct foo *next;      /* List of active foo */
-                                struct mumble amumble; /* Comment for mumble */
-                                int bar;
-                        };
-                            
-                        struct foo *foohead; /* Head of global foo list */
-                        </code></pre>
-
-        <p>
-            可能であれば、独自のリストを実装する代わりに、queue(3) マクロを使用すること。したがって、前述の例は以下のように書き直す方が良い。
-        </p>
-
-        <pre><code>
-                        #include &lt;sys/queue.h&gt;
-                
-                        struct foo {
-                                LIST_ENTRY(foo) link; /* Queue macro glue for foo lists */
-                                struct mumble amumble; /* Comment for mumble */
-                                int bar;
-                        };  
-                
-                        LIST_HEAD(, foo) foohead; /* Head of global foo list */
-                        </code></pre>
-
-        <p>
-            構造体の型に対して typedef を使用することは避けること。
-            これにより、アプリケーションが通常の struct タグを使用して構造体へのポインタを不透明に使用することが可能で、これは通常、ポインタを使った操作が可能であり、有益である。
-            typedef が必要な場合は、その名前を struct タグと一致させるようにすること。
-            また、"t" で終わる typedef は避け、Standard C または POSIX で指定されている場合を除く。
-        </p>
-
-    </section>
-
-    <section>
-        <h2>
-            実装への具体的なアプローチ
-        </h2>
-
-        <pre><code>
-                        /*
-                        * All major routines should have a comment briefly describing what
-                        * they do. The comment before the "main" routine should describe
-                        * what the program does.
-                        */
-                        int
-                        main(int argc, char *argv[])
-                        {
-                            int aflag, bflag, ch, num;
-                            const char *errstr;
-                        </code></pre>
-
-        <p>
-            一貫性のために、オプションの解析には getopt(3) を使用する。
-            オプションは getopt(3) の呼び出しと switch 文でソートされrうべきである。
-            switch のパーツが連鎖する場合を除き、FALLTHROUGH コメントが必要である。
-            数値引数は正確性を確認する必要がある。
-        </p>
-
-        <pre><code>
-                            while ((ch = getopt(argc, argv, "abn:")) != -1) {
-                                switch (ch) {   /* Indent the switch. */
-                                    case 'a':   /* Don't indent the case. */
-                                        aflag = 1;
-                                        /* FALLTHROUGH */
-                                    case 'b':
-                                        bflag = 1;
-                                        break;
-                                    case 'n':
-                                        num = strtonum(optarg, 0, INT_MAX, &errstr);
-                                        if (errstr) {
-                                            warnx("number is %s: %s", errstr, optarg);
-                                            usage();
-                                        }
-                                        break;
-                                    default:
-                                        usage();
-                                }
-                            }
-                            argc -= optind;
-                            argv += optind;
-                        </code></pre>
-
-        <p>
-            キーワードの後にスペースを使用すること（if、while、for、return、switch）。
-            ゼロまたは単一のステートメントの制御文には、そのステートメントが1行以上でない限り、中括弧は使用しない。
-        </p>
-
-        <pre><code>
-                            for (p = buf; *p != '\0'; ++p)
-                                continue;
-                            for (;;)
-                                stmt;
-                            for (;;) {
-                                z = a + really + long + statement + that + needs +
-                                  two + lines + gets + indented + four + spaces +
-                                  on + the + second + and + subsequent + lines;
-                            }
-                            for (;;) {
-                                if (cond)
-                                    stmt;
-                            }
-                        </code></pre>
-
-        <p>
-            for ループの一部を空白のままにすることができる。
-        </p>
-
-        <pre><code>
-                            for (; cnt < 15; cnt++) {
-                                stmt1;
-                                stmt2;
-                            }
-                        </code></pre>
-
-        <p>
-            インデントは8文字のタブで、セカンドレベルのインデントは4スペースとする。
-            必ず、すべてのコードは80列に収まるようにすること。
-        </p>
-
-        <pre><code>
-                            while (cnt < 20)
-                            z = a + really + long + statement + that + needs +
-                              two + lines + gets + indented + four + spaces +
-                              on + the + second + and + subsequent + lines;
-                        </code></pre>
-
-        <p>
-            行末にはホワイトスペースを追加しないこと。インデントを形成するためには、タブに続いてスペースを使用する。
-            タブよりも多くのスペースを使用しないこと。また、タブの前にスペースを使用しないこと。
-        </p>
-
-        <pre><code>
-                            if (test)
-                                stmt;
-                            else if (bar) {
-                                stmt;
-                                stmt;
-                            } else
-                                stmt;
-                        </code></pre>
-
-        <p>
-            関数名の後にスペースを使用しないこと。カンマの後にはスペースを使用すること。
-            ‘(’または‘[’の後、‘]’または‘)’の前、またはそれに先立つ‘(’の後にはスペースを使用しないこと。
-        </p>
-
-        <pre><code>
-                            if ((error = function(a1, a2)))
-                                exit(error);
-                        </code></pre>
-
-        <p>
-            単項演算子にはスペースは不要で、二項演算子にはスペースが必要である。
-        </p>
-
-        <pre><code>
-                            a = b->c[0] + ~d == (e || f) || g && h ? i : j >> 1;
-                            k = !(l & FLAGS);
-                        </code></pre>
-
-        <p>
-            exitは成功時には0、エラー時には非ゼロである必要がある。
-        </p>
-
-        <pre><code>
-                            /*
-                            * Avoid obvious comments such as
-                            * "Exit 0 on success."
-                            */
-                            exit(0);
-                        </code></pre>
-
-        <p>
-            関数の前には、その関数を先行する行に型を置く必要がある。
-        </p>
-
-        <pre><code>
-                            static char *
-                            function(int a1, int a2, float fl, int a4)
-                            {
-                        </code></pre>
-
-        <p>
-            関数内で変数を宣言する際は、サイズ順（大きい順から小さい順）、そしてアルファベット順にソートするように宣言すること。
-            複数の変数を1行に宣言しても問題はない。行がオーバーフローする場合は、タイプのキーワードを再利用すること。
-            変数の初期化でコードを難読化しないように注意すること。初期化は慎重に行い、初期化には関数呼び出しを使用しないこと。
-            しかし、安全性の観点から必ず宣言と初期化は同時に行うこと。未定義動作などを発生させる原因となる。
-        </p>
-
-        <pre><code>
-                        struct foo one = {}; /* Structure foo initialization */
-                        struct foo *two = NULL; /* Pointer to foo initialization */
-                
-                        double three = 0.0; /* Double initialization */
-                        int *four = NULL, five = 0; /* Pointer and integer initialization */
-                        char *six = NULL, seven = '\0', eight = '\0', nine = '\0', ten = '\0', 
-                            eleven = '\0', twelve = '\0'; /* Pointers and characters initialization */
-                            
-                        /* Initialize four with the return value of myfunction() */
-                        four = myfunction();
-                         
-                        /* Add code to initialize one and two if necessary */
-                        </code></pre>
-
-        <p>
-            しかし、以下の条件下では複数の変数を1行で宣言してはならない。
-            1番最初のconst*はポインタ自体が示すメモリ上のアドレスを変更できないことを示す。つまり、'a'が指す文字列へのポインタが指す先のデータは変更できない。
-            2番目のconstは、ポインタ変数'a'そのものが変更できないことを示している。つまり、'a'の指す値（アドレス）を変更できない。
-            [[deprecated]]この属性は、変数'a'が非推奨であることを示している。非推奨とは将来的なバージョンでサポートが終了する可能性があるということである。
-            このとき、一度にaとbを宣言してしまうと、bは型をunsigned constしか持っておらず、最初のconstはaの宣言にしか適応されない。
-        </p>
-
-        <pre><code>
-                            GOOD:
-                            unsigned int const *const a = NULL;
-                            unsigned int const *const b = NULL;
-                
-                            BAD:
-                            unsigned  const* const a, b;
-                        </code></pre>
-
-        <p>
-            C23では、数値リテラルの可読性の向上させるため、アポストロフィを使って数字をグループ化することで、プログラマは大きな数字をより簡単に理解できる。
-            具体例として、数値が何バイトであるかを表すために、3桁ごとに区切ることが求められる。
-            これにより、数値のバイト数を直感的に理解しやすくなる。例えば、10'035.677'789は3桁ずつ区切ると10'035.677'789となり、これが3つの10進数桁で構成されていることがわかる。
-            同様に、16進数や2進数でも同様の考え方が適用される。
-        </p>
-
-        <pre><code>
-                            /* Using digit separator for large decimal number */
-                            long large_number = 10'035'677'789; 
-                
-                            /* Using digit separator for hexadecimal number */
-                            int hex_number = 0xABCD'1234; 
-                
-                            /* Using digit separator for binary number */
-                            int binary_number = 0b1100'1010'0101'0010; 
-                        </code></pre>
-
-        <p>
-            関数内で関数を宣言しないこと。
-        </p>
-
-        <p>
-            キャストと sizeof()の呼び出しの後にはスペースを入れないこと。
-        </p>
-
-        <p>
-            "register" 指定子の使用は新しいコードでは非推奨である。
-            gcc などの最適化コンパイラは通常、コードのパフォーマンスを向上させるためにどの変数をレジスタに置くかをより良く選択できる。
-            ただし、"register" 指定子が必要な場合は、アセンブリコードを含む関数の場合のみである。
-        </p>
-
-        <p>
-            テストに '!' を使用しないこと。ブール型の場合に使用すること。
-
-            if (*p == '\0') ではなく if (!*p)
-        </p>
-
-        <p>
-            可能な限り、コードはコードチェッカー（たとえば、さまざまな静的アナライザー[gcc:--analyzer, clang:--alanyze]またはcc -Wall）を通過し、最小の警告を生成するようにするべきである。
-        </p>
-    </section>
-
-
-    <section>
-        <h2>
-            C23で追加された機能について
-        </h2>
-
-        <p>
-            基本的には積極的に使っていくべきである。
-        </p>
-
-        <p>
-            1. 新しいキーワードの追加:
-        </p>
-
-        <ul style="display: flex; list-style-type: none;">
-            <li style="margin-right: 10px;">bool</li>
-            <li style="margin-right: 10px;">static_assert</li>
-            <li style="margin-right: 10px;">true</li>
-            <li style="margin-right: 10px;">false</li>
-            <li>thread_local</li>
-        </ul>
-
-        <p>2. 整数幅の制約の削除: 整数幅の制約や古い符号表現（「1の補数」と「符号-絶対値」）が削除された。</p>
-
-        <p>3. static_assertの単一引数版の追加: static_assertの引数が1つだけのバージョンが追加された。</p>
-
-        <p>4. 識別子リストを持つ関数定義のサポートの削除: 識別子リストを持つ関数定義のサポートが削除された。</p>
-
-        <p>5. 空のパラメータリストを持つ関数宣言の扱いの変更: パラメータリストが空の関数宣言は、単一の void を含むパラメータリストと同じように扱われるようになった。</p>
-
-        <p>6. POSIX との調整: POSIX との調整が行われ、strftime のための拡張月名形式や、いくつかの関数（gmtime_r, localtime_r, memccpy, strdup,
-            strndup）の統合が行われた。</p>
-
-        <p>7. IEC 60559 浮動小数点規格との調和: IEC 60559 浮動小数点規格との調和が行われ、バイナリ浮動小数点技術仕様 TS 18661-1、10進浮動小数点技術仕様 TS
-            18661-2、および数学関数技術仕様 TS 18661-4a が統合された。</p>
-
-        <p>8. 定数式の認識の改善: constexpr 記憶クラス指定子とともに、オブジェクト定義のための constexpr 指定子が追加され、定数式として認識されるものが改善された。</p>
-
-        <p>9. その他の様々な変更: その他にも、ビット単位の整数型 _BitInt(N)、nullptr 定数、nullptr_t 型、__VA_OPT__ 指定子、可変修飾型のサポート、#embed
-            の導入、__has_include 機能の追加、#elifdef および #elifndef 条件付きインクルードプリプロセッサディレクティブの追加など、さまざまな変更が行われる。</p>
-
-        <h2>属性を含むアトリビュート機能を追加:</h2>
-
-        <ul style="display: flex; list-style-type: none; margin-bottom: 10px;">
-            <li style="margin-right: 10px;">deprecated</li>
-            <li style="margin-right: 10px;">fallthrough</li>
-            <li style="margin-right: 10px;">maybe_unused</li>
-            <li style="margin-right: 10px;">nodiscard</li>
-            <li style="margin-right: 10px;">reproducible</li>
-            <li style="margin-right: 10px;">unsequenced</li>
-            <li>noreturn</li>
-        </ul>
-
-        <p>deprecated: 将来使用しないことを示すエンティティをマークする。</p>
-
-        <p>fallthrough: switch や label のフォールスルーが偶発的ではなく、意図的である場合を明示的にマークする。</p>
-
-        <p>maybe_unused: 最終的に使用されないかもしれない実体をマークする。</p>
-
-        <p>nodiscard: 使用された場合、その値がプログラムによって何らかの方法で処理されるべきエンティティをマークする。</p>
-
-        <p>reproducible: 同じ入力が与えられると常に予測可能な出力を生成する関数タイプ(例えば、キャッシュされたデータ)をマークするため、しかしそのような関数の呼び出しの順序は依然として重要である。</p>
-
-        <p>unsequenced: 常に予測可能な出力を生成し、他のデータへの依存性がない関数タイプ（およびその他の関連する注意事項）をマークするためのものです。</p>
-
-        <p>noreturn: 関数が決して戻ってこないことを示す。</p>
-
-        <pre><code>
-                            int
-                            main(int argc, [[maybe_unused]]char *argv[argc + 1])
-                            {
-                                return 0;
-                            }
-                        </code></pre>
-
-        <h2>typeofとtypeof_unqual</h2>
-
-        <p><strong>typeof:</strong></p>
-
-        <p>typeof演算子は、指定された式または型名の型を取得します。</p>
-        <p>式が与えられた場合、その式の型が返されます。</p>
-        <p>型名が与えられた場合、その型の情報が返されます。</p>
-        <p>例えば、typeof(1 + 1)は式1 + 1の型を取得します。</p>
-
-        <p><strong>typeof_unqual:</strong></p>
-
-        <p>typeof_unqual演算子は、typeof演算子と同様に動作しますが、修飾を削除した型情報を返します。</p>
-        <p>つまり、constやvolatileなどの修飾子が削除された型情報が返されます。</p>
-        <p>例えば、typeof_unqual(const int)はintの型情報を返します。</p>
-
-        <h2>ビット精度の整数型 _BitInt の追加</h2>
-
-        <p>
-            _BitIntは、ビット精度を指定するための型指定子である。指定されたビット数の整数型を表す。
-            以下に、_BitIntの使用例を示す。
-        </p>
-
-        <pre><code>
-                            int 
-                            main(void) 
-                            {
-                                _BitInt(8) byte; 
-                                _BitInt(16) halfWord; 
-                                _BitInt(32) word; 
-                            
-                                byte = 255; 
-                                halfWord = 65535; 
-                                word = 4294967295; 
-                            
-                                printf("Byte: %d\n", byte);
-                                printf("Half Word: %d\n", halfWord);
-                                printf("Word: %d\n", word);
-                            
-                                return 0;
-                            }
-                        </code></pre>
-
-        <h2>型推論</h2>
-
-        <p>
-            型推論( Type inference; TI )とは、宣言がその初期化子として使用される式から型を推論することを可能にする機能である。
-            N3007提案では、auto i = 123L; の様に「型」の部分に auto と書くと初期化子（この場合は 123L）から変数（この場合は i）の型（この場合は long）
-            を言語処理系が推論するという構文である（概ねC++と同じですが、C++には参照やラムダ式があるので若干事情が異なる）。
-            auto は今までもキーワードであったが、（静的変数に対して）「自動変数」を宣言することを表すもので、省略可能であった。
-        </p>
-
-        <pre><code>
-                            int 
-                            main(void) 
-                            {
-                                auto fname = "/etc/hosts";
-                                auto file = fopen(fname, "r");
-                            
-                                if (file == NULL) {
-                                    perror(fname);
-                                    return 1;
-                                }
-                            
-                                char line[256];
-                                for (auto i = 1; fgets(line, sizeof(line), file); i++) {
-                                    printf("%03d: %s", i, line);
-                                }
-                            
-                                fclose(file);
-                                return 0;
-                            }
-                        </code></pre>
-
-    </section>
-</body>
+    <head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Self-taught KNF(Kernel Normal Form) スタイル　ガイド</title>
+	<style>
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+	header {
+	    background-color: #2b4366;
+	    color: white;
+	    text-align: center;
+	    padding: 1rem 0;
+	}
+
+	h1 {
+	    background-color: #2b4366;
+	    color: white;
+	    padding: 10px;
+	    text-align: center;
+	}
+
+	section {
+	    padding: 2rem;
+	    background-color: #fff;
+	    margin: 1rem 10%;
+	    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	    color: #000;
+	}
+
+	h2 {
+	    border-bottom: 2px solid #333;
+	    padding-bottom: 0.5rem;
+	    margin-bottom: 1rem;
+	}
+
+	ul {
+	    list-style-type: none;
+	    padding: 0;
+	}
+
+	li {
+	    padding: 0.5rem 0;
+	}
+
+	footer {
+	    background-color: #333;
+	    color: #fff;
+	    text-align: center;
+	    padding: 1rem 0;
+	    position: fixed;
+	    bottom: 0;
+	    width: 100%;
+	}
+
+	a {
+	    color: #fff;
+	    text-decoration: none;
+	    transition: color 0.3s;
+	}
+
+	a:hover {
+	    color: #ddd;
+	}
+
+	pre,
+	code {
+	    display: block;
+	    background-color: #daeffa;
+	    color: black;
+	    border: 1px solid #ddd;
+	    padding: 10px;
+	    margin: 10px 0;
+	    font-family: "Courier New", monospace;
+	    text-align: left;
+	}
+
+	.embedded-link {
+	    display: inline-block;
+	    padding: 10px 15px;
+	    margin: 5px 0;
+	    border: 1px solid #ddd;
+	    background-color: #f4f4f4;
+	    color: #000;
+	    text-decoration: none;
+	    border-radius: 5px;
+	    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	    transition: background-color 0.3s, box-shadow 0.3s;
+	}
+
+	.embedded-link:hover {
+	    background-color: #e9e9e9;
+	    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+	}
+
+	.centered-text {
+	    text-align: center;
+	}
+
+	code.inline {
+	    display: inline-block;
+	    background-color: #d5f0fd;
+	    color: black;
+	    border: 1px solid #ddd;
+	    padding: 0.1px;
+	    font-family: "Courier New", monospace;
+	    margin: 0;
+	}
+
+	#menu-container {
+	    position: relative;
+	    background-color: silver;
+	    color: black;
+	    padding: 10px;
+	    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+	}
+
+	#menu-content a {
+	    margin-bottom: 10px;
+	    display: block;
+	}
+
+	#menu-bar {
+	    cursor: pointer;
+	}
+
+	#menu-content {
+	    display: none;
+	    position: absolute;
+	    top: 100%;
+	    left: 0;
+	    /* 右揃えに変更 */
+	    background-color: silver;
+	    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+	    padding: 20px;
+	    text-align: left;
+	}
+
+	/* メニューが表示されるときのスタイル */
+	#menu-content.show {
+	    display: block;
+	}
+
+	#style-guide-heading {
+	    text-align: center;
+	    margin-bottom: 0;
+	    font-family: 'Apple Braille', 'Arial', sans-serif;
+	}
+	</style>
+    </head>
+
+    <body>
+	<h1 id="style-guide-heading">Self-taught KNF(Kernel Normal Form) Style Guide</h1>
+
+	<!-- メニューバーとメニューの追加 -->
+	<div id="menu-container">
+	    <div id="menu-bar">&#9776; Menu</div>
+	    <div id="menu-content">
+		<a href="https://unixtech.cc">Home</a>
+		<a href="https://unixtech.cc/MyCodingStyle.html">Self-taught KNF</a>
+		<!--            <a href="#">Services</a>
+		    <a href="#">Contact</a> -->
+	    </div>
+	</div>
+
+	<script>
+	    document.addEventListener('DOMContentLoaded', function () {
+		var menuBar = document.getElementById('menu-bar');
+		var menuContent = document.getElementById('menu-content');
+
+		menuBar.addEventListener('click', function () {
+		    menuContent.classList.toggle('show');
+		});
+
+		// クリック以外の領域をクリックした場合にメニューを閉じる
+		document.addEventListener('click', function (event) {
+		    if (!menuBar.contains(event.target) && !menuContent.contains(event.target)) {
+			menuContent.classList.remove('show');
+		    }
+		});
+	    });
+	</script>
+
+	<section>
+	    <h2>
+		概要
+	    </h2>
+	    <p>
+			以下のコーディングスタイルはカーネルなどの低レベルコーディングに加え、ユーザースペースにおけるコーディングにも及ぶ。
+			OpenBSD/KNF、FreeBSD/KNF、Apple kernel programing styleからいい部分を抜粋し、個人的に違うなと思った部分や、
+			C23のモダンな機能も追加したオレオレCモダンコーディングスタイルである。
+		</p>
+	</section>
+
+	<!-- Existing content goes here -->
+
+	<!-- New Session -->
+
+	<section>
+	    <h2>C言語の規格</h2>
+
+	    <p>C言語の規格はC23以上で記述することとする。最低でもC11以上を使用することを推奨する。間違ってもC99や、C89を使ってはならない。</p>
+	</section>
+
+	<section>
+	    <h2>コメント・ドキュメント</h2>
+
+	    <p>C++の"//"というスタイルではC言語では使わない。以下のようになる。また、日本語は使ってはならない。いかなる理由があっても、英語でコメントをすること。また、複雑でわかりにくい関数に関して、カーネルの記述でのみASCIIアートを使ってメモリの図を使ってコメントしても構わない。
+	    </div>
+	    </div>
+	    </p>
+
+	    <pre><code>
+	/*
+	 * A very important one-line comment would be as follows. 
+	 */
+
+	/* Most one-line comments look like this. */
+
+	/*
+	 * This is what a multi-line comment looks like. Make it a real sentence.
+	 * Fill it in so that it looks like a real paragraph. 
+	 */
+	    </code></pre>
+	</section>
+
+	<section>
+	    <h2>ヘッダーファイルの扱いについて</h2>
+
+	    <p>カーネル・インクルード・ファイル（<code class="inline">&lt;sys/*.h&gt;</code>）が最初にインクルードされる。
+	    <code class="inline">&lt;sys/types.h&gt;</code>をインクルードする際、<code
+		  class="inline">&lt;sys/cdefs.h&gt;</code>をインクルードする必要はない。(OpenBSD/NetBSD/FreeBSD/macOS)
+	      また、<>内は非ローカル・インクルードである。clangの場合は<>にローカル・インクルードがあっても大丈夫だが、gccの場合、弾かれる。
+	      また、具体的なインクルードの順番として、<code class="inline">&lt;sys/param.h&gt;</code>または<code
+							    class="inline">&lt;sys/types.h&gt;</code>が最初に来る。<code
+							    class="inline">&lt;sys/types.h&gt;</code>には<code class="inline">&lt;sys/param.h&gt;</code>が含まれる。
+							その次に必要であれば<code class="inline">&lt;sys/system.h&gt;</code>をインクルードする。そのあとは、アルファベット順に並べる。
+	    </p>
+
+	    <pre><code>
+	#include	&lt;sys/types.h&gt;  /* Non-local includes in	angle brackets.	*/
+	#include	&lt;sys/systm.h&gt;
+	#include	&lt;sys/endian.h&gt;
+	#include	&lt;sys/lock.h&gt;
+	#include	&lt;sys/queue.h&gt;
+	    </code></pre>
+
+	    <p2>ネットワークプログラムがある場合、それはカーネル・インクルード・ファイルの2番目にネットワーク・インクルード・ファイルを置く。</p2>
+
+	    <pre><code>
+	#include &lt;net/if.h&gt;
+	#include &lt;net/if_dl.h&gt;
+	#include &lt;net/route.h&gt;
+	#include &lt;netinet/in.h&gt;
+	#include &lt;arpa/inet.h&gt;
+	    </code></pre>
+
+	    <p>
+	    次に空白行があり、その後に/usr/includeファイルが続く。絶対に/usr/includeの前にカーネルやネットワークなどのインクルード・ファイルをインクルードしない。
+	    グローバルパス名は<code class="inline">&lt;paths.h&gt;</code>で定義されている。 プログラムにローカルなパス名はローカルディレクトリの "pathnames.h" にある。
+	    </p>
+
+	    <pre><code>
+	#include &lt;paths.h&gt;
+	    </code></pre>
+
+	    <p>
+	    ローカル・インクルード・ファイルの前にもう一つ空白を入れる。
+	    </p>
+
+	    <pre><code>
+	#include	"pathnames.h"	       /* Local	includes in double quotes. */
+	    </code></pre>
+
+	    <p>ヘッダーファイル内では、関数のプロトタイプを __BEGIN_DECLS と __END_DECLS の対応するペア内に配置すること。これにより、ヘッダーファイルがC++から使用可能になる。</p>
+
+	</section>
+
+	<section>
+	    <h2>プライベート/パブリック 関数の扱い</h2>
+
+	    <p>
+	    プライベート関数のプロトタイプ（すなわち、他で使用されていない関数）は、最初のソースモジュールの先頭に配置する。
+	    カーネルでは、プライベート関数は使用される前に定義されていればプロトタイプは必要ない。
+	    ユーザースペースでは、1つのソースモジュールにローカルな関数は 'static' で宣言すべきである。
+	    ただし、これはカーネルでは行われるべきではありません。なぜなら、それが行われるとカーネルデバッガの使用が不可能になるからである。
+	    </p>
+
+	    <p>
+	    他のファイルから使用される関数は、関連するヘッダーファイルでプロトタイプ宣言さ
+	    1つのモジュールで複数回使用される関数は、別のヘッダーファイルにまとめられる。例えば、"extern.h" のようなものである。
+	    プロトタイプには型に関連する変数名を持たせてはいけない。すなわち、
+	    </p>
+
+	    <pre><code>
+	GOOD:
+	void	function(int);
+
+	BAD:
+	void	function(int a);
+	    </code></pre>
+
+	    <p>
+	    プロトタイプには、関数名を整列させるためにタブの後に余分なスペースを入れても構わない。
+	    </p>
+
+	    <pre><code>
+	static int    add_numbers(int num1, int num2);
+	static double calculate_average(const double *numbers, int count);
+	    </code></pre>
+
+	    <p>関数名と引数リストの間にスペースを入れないこと。</p>
+
+	    <pre><code>
+	GOOD:
+	void function(int arg1, char arg2);
+
+	BAD:
+	void function (int arg1, char arg2);
+	    </code></pre>
+	</section>
+
+	<section>
+	    <h2>マクロの使い</h2>
+
+	    <p>
+	    実装名前空間では#defineや宣言を行わない。これはアサートの実装、または過去のコードの保守でのみ使用する。
+	    "unsafe" マクロ（副作用を持つもの）および定数のマクロの名前は全て大文字であるべき。
+	    式のようなマクロの展開は、単一のトークンであるか、外側に括弧があるべき。
+	    #define とマクロ名の間にはスペースまたはタブ文字を入れるが、ファイル内で一貫性を保つ。
+	    マクロが関数のインライン展開である場合、関数名は全て小文字で、マクロは同じ名前を全て大文字で持つ。
+	    バックスラッシュは右寄せにし、可読性を向上させる。
+	    マクロが複合文をカプセル化する場合は、それをdoループで囲むことで、if文で安全に使用できるようにする。
+	    最終的なセミコロンはマクロではなく、呼び出しで提供する。これはpretty-printersやエディタでの解析を容易にする。
+	    </p>
+
+	    <pre><code>
+	#define MACRO(x, y) do {                      \
+		variable = (x) + (y);                     \
+		(y) += 2;                                 \
+	} while (0)
+	    </code></pre>
+
+	    <p>
+	    C23以上または新しいコードでは、constexprを使用する。defineは計算を行わず、コンパイル時にただ展開するだけだが、C23で追加されたconstexpr
+	    はコンパイル時に一回計算されるため、未定義動作が起こりにくい。
+	    </p>
+
+	    <pre><code>
+	constexpr float f = 23.0f;
+	constexpr float g = 33.0f;
+	constexpr float h = f / g; // is not affected by fesetround() above
+	printf("%f\n", h);
+	    </code></pre>
+
+	    <p>
+	    ただし、以下の条件下でconstexprを使用することはできない。
+	    </p>
+
+	    <li>
+		ポインタ（ヌルポインタは可）
+	    </li>
+
+	    <li>
+		可変修飾型
+	    </li>
+
+	    <li>
+		アトミック型
+	    </li>
+
+	    <li>
+		volatile型
+	    </li>
+
+	    <li>
+		restrictポインタ
+	    </li>
+
+	    <p>
+	    条件付きでコードがコンパイルされる場合、#ifdefまたは#ifが使用されると、対応する #endif または #else の後にコメントが追加されることがる。
+	    これは読者が条件付きでコンパイルされたコード領域がどこで終わるかを簡単に判別できるようにするためである。
+	    このコメントは、(主観的に)長い領域や20行を超える領域、または入れ子になった一連の #ifdef が読者を混乱させる可能性がある場合にのみ使用されるべきである。
+	    コメントは #endif または #else から単一のスペースで区切られるべきである。
+	    短い条件付きコンパイル領域の場合、閉じるコメントは使用しないこと。
+	    </p>
+
+	    <p>
+	    #endif のコメントは、対応する #if または #ifdef で使用された式と一致するべべきである。
+	    #else および #elif のコメントは、前の #if および/または #elif ステートメントで使用された式の否定と一致するべきである。
+	    コメントでは、サブエクスプレッション "defined(FOO)" は "FOO" と略される。
+	    コメントの目的で、"#ifndef FOO" は "#if !defined(FOO)" として扱われる。
+	    </p>
+
+    <pre><code>
+	#ifdef KTRACE
+	#include &lt;sys/ktrace.h&gt;
+	#endif
+
+	#ifdef COMPAT_43
+	/* A large region here, or other	conditional code. */
+	#else /*	!COMPAT_43 */
+	/* Or here. */
+	#endif /* COMPAT_43 */
+
+	#ifndef COMPAT_43
+	/* Yet another large region here, or other conditional code. */
+	#else /*	COMPAT_43 */
+	/* Or here. */
+	#endif /* !COMPAT_43 */
+    </code></pre>
+
+	</section>
+
+	<section>
+	    <h2>列挙型、構造体の扱い</h2>
+
+	    <p>
+	    列挙型の値はすべて大文字である。
+	    </p>
+
+	    <pre><code>
+	enum enumtype { ONE, TWO } et;
+	    </code></pre>
+
+	    <p>
+	    識別子においては、キャメルケースやタイトルケースではなく、スネークケースの使用が好まれる。
+	    </p>
+
+	    <P>
+	    変数を構造体で宣言する際には、使用目的、次にサイズ（大きい順から小さい順）、そしてアルファベット順にソートして宣言すること。
+	    通常、最初のカテゴリは適用されないが、例外もある。それぞれに独自の行を使用する。
+	    最初の単語の後にはタブを挿入し、例えば 'int^Ix;' や 'struct^Ifoo *x;' のようにする。（注：^Iはタブ文字を表している。）
+	    </P>
+
+	    <p>
+	    メジャーな構造体は、それらが使用されるファイルの先頭に宣言するか、複数のソースファイルで使用される場合は別個のヘッダーファイルに宣言する。
+	    構造体の使用は別個の宣言で行い、ヘッダーファイルで宣言されている場合は "extern" を使用する。
+	    </p>
+
+	    <pre><code>
+	struct foo {
+		struct foo *next;      /* List of active foo */
+		struct mumble amumble; /* Comment for mumble */
+		int bar;
+	};
+
+	struct foo *foohead; /* Head of global foo list */
+	    </code></pre>
+
+	    <p>
+	    可能であれば、独自のリストを実装する代わりに、queue(3) マクロを使用すること。したがって、前述の例は以下のように書き直す方が良い。
+	    </p>
+
+	    <pre><code>
+	#include &lt;sys/queue.h&gt;
+
+	struct foo {
+		LIST_ENTRY(foo) link; /* Queue macro glue for foo lists */
+		struct mumble amumble; /* Comment for mumble */
+		int bar;
+	};  
+
+			LIST_HEAD(, foo) foohead; /* Head of global foo list */
+	    </code></pre>
+
+	    <p>
+	    構造体の型に対して typedef を使用することは避けること。
+	    これにより、アプリケーションが通常の struct タグを使用して構造体へのポインタを不透明に使用することが可能で、これは通常、ポインタを使った操作が可能であり、有益である。
+	    typedef が必要な場合は、その名前を struct タグと一致させるようにすること。
+	    また、"t" で終わる typedef は避け、Standard C または POSIX で指定されている場合を除く。
+	    </p>
+
+	</section>
+
+	<section>
+	    <h2>
+		実装への具体的なアプローチ
+	    </h2>
+
+	    <pre><code>
+	/*
+	* All major routines should have a comment briefly describing what
+	* they do. The comment before the "main" routine should describe
+	* what the program does.
+	*/
+	int
+	main(int argc, char *argv[])
+	{
+	    int aflag, bflag, ch, num;
+	    const char *errstr;
+	    </code></pre>
+
+	    <p>
+	    一貫性のために、オプションの解析には getopt(3) を使用する。
+	    オプションは getopt(3) の呼び出しと switch 文でソートされrうべきである。
+	    switch のパーツが連鎖する場合を除き、FALLTHROUGH コメントが必要である。
+	    数値引数は正確性を確認する必要がある。
+	    </p>
+
+	    <pre><code>
+		while ((ch = getopt(argc, argv, "abn:")) != -1) {
+			switch (ch) { /* Indent the switch. */
+				case 'a': /* Don't indent the case. */
+					aflag = 1;
+					/* FALLTHROUGH */
+				case 'b':
+					bflag = 1;
+					break;
+				case 'n':
+					num = strtonum(optarg, 0, INT_MAX, &errstr);
+					if (errstr) {
+						warnx("number is %s: %s", errstr, optarg);
+						usage();
+					}
+					break;
+				default:
+					usage();
+			}
+		}
+			
+		argc -= optind;
+		argv += optind;
+	    </code></pre>
+
+	    <p>
+	    キーワードの後にスペースを使用すること（if、while、for、return、switch）。
+	    ゼロまたは単一のステートメントの制御文には、そのステートメントが1行以上でない限り、中括弧は使用しない。
+	    </p>
+
+	    <pre><code>
+		for (p = buf; *p != '\0'; ++p)
+		    continue;
+
+		for (;;) 
+		    stmt;
+
+		for (;;) {
+   			z = a + really + long + statement + that + needs +
+   			  two + lines + gets + indented + four + spaces +
+       		  on + the + second + and + subsequent + lines;
+		}
+
+		for (;;) {
+			if (cond)
+       		stmt;
+		}	
+	    </code></pre>
+
+	    <p>
+	    for ループの一部を空白のままにすることができる。
+	    </p>
+
+	    <pre><code>
+		for (; cnt < 15; cnt++) {
+		    stmt1;
+		    stmt2;
+		}
+	    </code></pre>
+
+	    <p>
+	    インデントは8文字のタブで、セカンドレベルのインデントは4スペースとする。
+	    必ず、すべてのコードは80列に収まるようにすること。
+	    </p>
+
+		<pre><code>
+		while (cnt < 20)
+		    z = a + really + long + statement + that + needs +
+		     two + lines + gets + indented + four + spaces +
+		     on + the + second + and + subsequent + lines;
+	    </code></pre>
+
+	    <p>
+	    行末にはホワイトスペースを追加しないこと。インデントを形成するためには、タブに続いてスペースを使用する。
+	    タブよりも多くのスペースを使用しないこと。また、タブの前にスペースを使用しないこと。
+	    </p>
+
+	    <pre><code>
+		if (test)
+		tmt;
+		else if (bar) {
+		stmt;
+		stmt;
+		} else
+		stmt;
+	    </code></pre>
+
+	    <p>
+	    関数名の後にスペースを使用しないこと。カンマの後にはスペースを使用すること。
+	    ‘(’または‘[’の後、‘]’または‘)’の前、またはそれに先立つ‘(’の後にはスペースを使用しないこと。
+	    </p>
+
+		<pre><code>
+		if ((error = function(a1, a2)))
+		exit(error);
+		</code></pre>
+
+	    <p>
+	    単項演算子にはスペースは不要で、二項演算子にはスペースが必要である。
+	    </p>
+
+	    <pre><code>
+		a = b->c[0] + ~d == (e || f) || g && h ? i : j >> 1;
+		k = !(l & FLAGS);
+	    </code></pre>
+
+	    <p>
+	    exitは成功時には0、エラー時には非ゼロである必要がある。
+	    </p>
+
+		<pre><code>
+		/*
+		 * Avoid obvious comments such as
+		 * "Exit 0 on success."
+		 */
+	 	exit(0);
+	   </code></pre>
+
+	    <h2>
+		関数宣言
+	    </h2>
+
+	    <p>
+	    関数の前には、その関数を先行する行に型を置く必要がある。
+	    </p>
+
+	    <pre><code>
+	static char *
+	function(int a1, int a2, float fl, int a4)
+	{
+	    </code></pre>
+
+	    <p>
+	    関数内で変数を宣言する際は、サイズ順（大きい順から小さい順）、そしてアルファベット順にソートするように宣言すること。
+	    複数の変数を1行に宣言しても問題はない。行がオーバーフローする場合は、タイプのキーワードを再利用すること。
+	    変数の初期化でコードを難読化しないように注意すること。初期化は慎重に行い、初期化には関数呼び出しを使用しないこと。
+	    しかし、安全性の観点から必ず宣言と初期化は同時に行うこと。未定義動作などを発生させる原因となる。
+	    </p>
+
+	    <h2>
+		変遷宣言
+	    </h2>
+	    <pre><code>
+	struct foo one = {}; /* Structure foo initialization */
+	struct foo *two = NULL; /* Pointer to foo initialization */
+
+	double three = 0.0; /* Double initialization */
+	int *four = NULL, five = 0; /* Pointer and integer initialization */
+	char *six = NULL, seven = '\0', eight = '\0', nine = '\0', ten = '\0',
+	eleven = '\0', twelve = '\0'; /* Pointers and characters initialization */
+
+	/* Initialize four with the return value of myfunction() */
+	four = myfunction();
+
+	/* Add code to initialize one and two if necessary */
+	    </code></pre>
+
+	    <p>
+	    しかし、以下の条件下では複数の変数を1行で宣言してはならない。
+	    1番最初のconst*はポインタ自体が示すメモリ上のアドレスを変更できないことを示す。つまり、'a'が指す文字列へのポインタが指す先のデータは変更できない。
+	    2番目のconstは、ポインタ変数'a'そのものが変更できないことを示している。つまり、'a'の指す値（アドレス）を変更できない。
+	    [[deprecated]]この属性は、変数'a'が非推奨であることを示している。非推奨とは将来的なバージョンでサポートが終了する可能性があるということである。
+	    このとき、一度にaとbを宣言してしまうと、bは型をunsigned constしか持っておらず、最初のconstはaの宣言にしか適応されない。
+	    </p>
+
+	    <pre><code>
+	GOOD:
+	unsigned int const *const a = NULL;
+	unsigned int const *const b = NULL;
+
+	BAD:
+	unsigned  const* const a, b;
+	    </code></pre>
+
+		<p>
+			このように、コンマ演算子(,)について、Cではときどき注意が必要である。また、クリーンなコードでは、ほとんど使わないことが好ましい。
+			例えば、A[i, j] において、カンマ演算子は i と j を順番に評価し、最後に j の値を返す。
+			これは通常の2次元配列の添字の意味ではなく、A 配列の j 番目の要素を参照することになる。
+		</p>
+
+		<pre><code>
+	#include &lt;stdlib.h&gt;
+	#include &lt;stdio.h&gt;
+
+	int 
+	main(int argc, [[maybe_unused]]char *argv[argc + 1]) 
+	{
+		int i = 2;
+		int j = 3;
+		int A[6] = {
+			[0] = 0,
+			[1] = 1,
+			[2] = 2,
+			[3] = 3,
+			[4] = 4,
+			[5] = 5
+		};
+
+		/*
+		 * GOOD
+		 */
+		int result = A[j];
+			
+		/*
+		 * BAD
+		 */
+		// int result = A[i, j]; 
+	
+		printf("%d\n", result); 
+		
+		return EXIT_SUCCESS;
+	}
+
+		</code></pre>
+
+	    <h2>
+		数値リテラル
+	    </h2>
+
+	    <p>
+	    C23では、数値リテラルの可読性の向上させるため、アポストロフィを使って数字をグループ化することで、プログラマは大きな数字をより簡単に理解できる。
+	    具体例として、数値が何バイトであるかを表すために、3桁ごとに区切ることが求められる。
+	    これにより、数値のバイト数を直感的に理解しやすくなる。例えば、10'035.677'789は3桁ずつ区切ると10'035.677'789となり、これが3つの10進数桁で構成されていることがわかる。
+	    同様に、16進数や2進数でも同様の考え方が適用される。
+	    </p>
+
+	    <pre><code>
+	    /* Using digit separator for large decimal number */
+ 	   long large_number = 10'035'677'789; 
+
+	    /* Using digit separator for hexadecimal number */
+ 	   int hex_number = 0xABCD'1234; 
+
+	    /* Using digit separator for binary number */
+ 	   int binary_number = 0b1100'1010'0101'0010; 
+	    </code></pre>
+
+	    <h2>
+		bool型　真偽値
+	    </h2>
+
+	    <p>
+	    値が0というのはfalseを示す。逆に、0以外の任意の値はtrueを示す。
+	    ==や!=演算子を使いそれぞれの真偽をテストできる。
+	    以下のように書くことが好まれる。
+	    </p>
+
+	    <pre><code>
+	    GOOD:
+	    if (i) {
+		// ...
+	    }
+
+	    BAD:
+	    if (i != 0) {
+		// ...
+	    }            
+	    </code></pre>
+
+	    <p>
+	    また、冗長な比較は可読性が低く、コードを複雑化させる。
+	    真偽値に依存する条件がある場合は、その真偽値を条件として直接使用する。
+	    再び、次のようなものを書き直すことで冗長性を避けることができる。
+	    </p>
+
+	    <pre><code>
+	    GOOD:
+	    bool b = ...;
+	    // ...
+	    if (b) {
+		// ...
+	    }
+
+	    BAD:
+	    bool b = ...;
+	    // ...
+	    if ((b != false) == true) {
+		// ...
+	    }
+	    </code></pre>
+
+	    <p>
+	    関数内で関数を宣言しないこと。
+	    </p>
+
+	    <p>
+	    キャストと sizeof()の呼び出しの後にはスペースを入れないこと。
+	    </p>
+
+	    <p>
+	    "register" 指定子の使用は新しいコードでは非推奨である。
+	    gcc などの最適化コンパイラは通常、コードのパフォーマンスを向上させるためにどの変数をレジスタに置くかをより良く選択できる。
+	    ただし、"register" 指定子が必要な場合は、アセンブリコードを含む関数の場合のみである。
+	    </p>
+
+	    <p>
+	    テストに '!' を使用しないこと。ブール型の場合に使用すること。
+
+	    if (*p == '\0') ではなく if (!*p)
+	    </p>
+
+	    <p>
+	    可能な限り、コードはコードチェッカー（たとえば、さまざまな静的アナライザー[gcc:--analyzer, clang:--alanyze]またはcc -Wall）を通過し、最小の警告を生成するようにするべきである。
+	    </p>
+	</section>
+
+
+	<section>
+	    <h2>
+		C23で追加された機能について
+	    </h2>
+
+	    <p>
+	    基本的には積極的に使っていくべきである。
+	    </p>
+
+	    <p>
+	    1. 新しいキーワードの追加:
+	    </p>
+
+	    <ul style="display: flex; list-style-type: none;">
+		<li style="margin-right: 10px;">bool</li>
+		<li style="margin-right: 10px;">static_assert</li>
+		<li style="margin-right: 10px;">true</li>
+		<li style="margin-right: 10px;">false</li>
+		<li>thread_local</li>
+	    </ul>
+
+	    <p>2. 整数幅の制約の削除: 整数幅の制約や古い符号表現（「1の補数」と「符号-絶対値」）が削除された。</p>
+
+	    <p>3. static_assertの単一引数版の追加: static_assertの引数が1つだけのバージョンが追加された。</p>
+
+	    <p>4. 識別子リストを持つ関数定義のサポートの削除: 識別子リストを持つ関数定義のサポートが削除された。</p>
+
+	    <p>5. 空のパラメータリストを持つ関数宣言の扱いの変更: パラメータリストが空の関数宣言は、単一の void を含むパラメータリストと同じように扱われるようになった。</p>
+
+	    <p>6. POSIX との調整: POSIX との調整が行われ、strftime のための拡張月名形式や、いくつかの関数（gmtime_r, localtime_r, memccpy, strdup,
+	    strndup）の統合が行われた。</p>
+
+	    <p>7. IEC 60559 浮動小数点規格との調和: IEC 60559 浮動小数点規格との調和が行われ、バイナリ浮動小数点技術仕様 TS 18661-1、10進浮動小数点技術仕様 TS
+	    18661-2、および数学関数技術仕様 TS 18661-4a が統合された。</p>
+
+	    <p>8. 定数式の認識の改善: constexpr 記憶クラス指定子とともに、オブジェクト定義のための constexpr 指定子が追加され、定数式として認識されるものが改善された。</p>
+
+	    <p>9. その他の様々な変更: その他にも、ビット単位の整数型 _BitInt(N)、nullptr 定数、nullptr_t 型、__VA_OPT__ 指定子、可変修飾型のサポート、#embed
+	    の導入、__has_include 機能の追加、#elifdef および #elifndef 条件付きインクルードプリプロセッサディレクティブの追加など、さまざまな変更が行われる。</p>
+
+	    <h2>属性を含むアトリビュート機能を追加:</h2>
+
+	    <ul style="display: flex; list-style-type: none; margin-bottom: 10px;">
+		<li style="margin-right: 10px;">deprecated</li>
+		<li style="margin-right: 10px;">fallthrough</li>
+		<li style="margin-right: 10px;">maybe_unused</li>
+		<li style="margin-right: 10px;">nodiscard</li>
+		<li style="margin-right: 10px;">reproducible</li>
+		<li style="margin-right: 10px;">unsequenced</li>
+		<li>noreturn</li>
+	    </ul>
+
+	    <p>deprecated: 将来使用しないことを示すエンティティをマークする。</p>
+
+	    <p>fallthrough: switch や label のフォールスルーが偶発的ではなく、意図的である場合を明示的にマークする。</p>
+
+	    <p>maybe_unused: 最終的に使用されないかもしれない実体をマークする。</p>
+
+	    <p>nodiscard: 使用された場合、その値がプログラムによって何らかの方法で処理されるべきエンティティをマークする。</p>
+
+	    <p>reproducible: 同じ入力が与えられると常に予測可能な出力を生成する関数タイプ(例えば、キャッシュされたデータ)をマークするため、しかしそのような関数の呼び出しの順序は依然として重要である。</p>
+
+	    <p>unsequenced: 常に予測可能な出力を生成し、他のデータへの依存性がない関数タイプ（およびその他の関連する注意事項）をマークするためのものです。</p>
+
+	    <p>noreturn: 関数が決して戻ってこないことを示す。</p>
+
+	    <pre><code>
+	    int
+	    main(int argc, [[maybe_unused]]char *argv[argc + 1])
+	    {
+		return 0;
+	    }
+	    </code></pre>
+
+	    <h2>typeofとtypeof_unqual</h2>
+
+	    <p><strong>typeof:</strong></p>
+
+	    <p>typeof演算子は、指定された式または型名の型を取得します。</p>
+	    <p>式が与えられた場合、その式の型が返されます。</p>
+	    <p>型名が与えられた場合、その型の情報が返されます。</p>
+	    <p>例えば、typeof(1 + 1)は式1 + 1の型を取得します。</p>
+
+	    <p><strong>typeof_unqual:</strong></p>
+
+	    <p>typeof_unqual演算子は、typeof演算子と同様に動作しますが、修飾を削除した型情報を返します。</p>
+	    <p>つまり、constやvolatileなどの修飾子が削除された型情報が返されます。</p>
+	    <p>例えば、typeof_unqual(const int)はintの型情報を返します。</p>
+
+	    <h2>ビット精度の整数型 _BitInt の追加</h2>
+
+	    <p>
+	    _BitIntは、ビット精度を指定するための型指定子である。指定されたビット数の整数型を表す。
+	    以下に、_BitIntの使用例を示す。
+	    </p>
+
+	    <pre><code>
+		    int 
+		    main(void) 
+		    {
+			_BitInt(8) byte; 
+			_BitInt(16) halfWord; 
+			_BitInt(32) word; 
+
+			byte = 255; 
+			halfWord = 65535; 
+			word = 4294967295; 
+
+			printf("Byte: %d\n", byte);
+			printf("Half Word: %d\n", halfWord);
+			printf("Word: %d\n", word);
+
+			return 0;
+		    }
+	    </code></pre>
+
+	    <h2>型推論</h2>
+
+	    <p>
+	    型推論( Type inference; TI )とは、宣言がその初期化子として使用される式から型を推論することを可能にする機能である。
+	    N3007提案では、auto i = 123L; の様に「型」の部分に auto と書くと初期化子（この場合は 123L）から変数（この場合は i）の型（この場合は long）
+	    を言語処理系が推論するという構文である（概ねC++と同じですが、C++には参照やラムダ式があるので若干事情が異なる）。
+	    auto は今までもキーワードであったが、（静的変数に対して）「自動変数」を宣言することを表すもので、省略可能であった。
+	    </p>
+
+	    <pre><code>
+			    int 
+			    main(void) 
+			    {
+				auto fname = "/etc/hosts";
+				auto file = fopen(fname, "r");
+
+				if (file == NULL) {
+				    perror(fname);
+				    return 1;
+				}
+
+				char line[256];
+				for (auto i = 1; fgets(line, sizeof(line), file); i++) {
+				    printf("%03d: %s", i, line);
+				}
+
+				fclose(file);
+				return 0;
+			    }
+	    </code></pre>
+
+	</section>
+    </body>
 
 </html>
