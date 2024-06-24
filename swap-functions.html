@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swap実装の効率性と非効率性の完全な説明</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        svg {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+</head>
+<body>
+    <h1>Swap実装の効率性と非効率性の完全な説明</h1>
+
+    <h2>1. データ構造の説明</h2>
+
+    <h3>1.1 swap1 (スタックベース)</h3>
+    <p>
+        - 一時的な配列 <code>char temp[size]</code> をスタック上に確保<br>
+        - バイト単位でデータをコピー
+    </p>
+
+    <h3>1.2 swap2 (ヒープベース)</h3>
+    <p>
+        - 一時的な配列 <code>char *temp</code> をヒープ上に動的確保<br>
+        - <code>memcpy()</code> 関数を使用してデータをコピー
+    </p>
+
+    <h3>1.3 swap3 (sys/queue.hベース)</h3>
+    <p>
+        - <code>sys/queue.h</code> で定義されたリスト構造を使用<br>
+        - <code>struct listitem</code> にデータへのポインタと大きさを保持<br>
+        - リスト要素間でポインタを交換
+    </p>
+
+    <h2>2. メモリレイアウトの比較</h2>
+
+    <svg width="700" height="300" xmlns="http://www.w3.org/2000/svg">
+        <style>
+            text { font-family: Arial; font-size: 14px; }
+            .title { font-weight: bold; font-size: 16px; }
+        </style>
+        
+        <!-- スタックベース -->
+        <g transform="translate(0,0)">
+            <text x="10" y="20" class="title">スタックベース (swap1)</text>
+            <rect x="10" y="30" width="200" height="50" fill="#FFB3BA" stroke="black" />
+            <text x="15" y="60">データA</text>
+            <rect x="10" y="90" width="200" height="50" fill="#BAFFC9" stroke="black" />
+            <text x="15" y="120">データB</text>
+            <rect x="10" y="150" width="200" height="50" fill="#BAE1FF" stroke="black" />
+            <text x="15" y="180">一時バッファ</text>
+        </g>
+        
+        <!-- ヒープベース -->
+        <g transform="translate(250,0)">
+            <text x="10" y="20" class="title">ヒープベース (swap2)</text>
+            <rect x="10" y="30" width="200" height="50" fill="#FFB3BA" stroke="black" />
+            <text x="15" y="60">データA</text>
+            <rect x="10" y="90" width="200" height="50" fill="#BAFFC9" stroke="black" />
+            <text x="15" y="120">データB</text>
+            <rect x="10" y="150" width="200" height="50" fill="#BAE1FF" stroke="black" />
+            <text x="15" y="180">動的割り当てバッファ</text>
+        </g>
+        
+        <!-- queueベース -->
+        <g transform="translate(500,0)">
+            <text x="10" y="20" class="title">queueベース (swap3)</text>
+            <rect x="10" y="30" width="180" height="30" fill="#FFB3BA" stroke="black" />
+            <text x="15" y="50">データA</text>
+            <rect x="10" y="70" width="180" height="30" fill="#BAFFC9" stroke="black" />
+            <text x="15" y="90">データB</text>
+            <rect x="10" y="110" width="80" height="30" fill="#BAE1FF" stroke="black" />
+            <text x="15" y="130">ポインタA</text>
+            <rect x="110" y="110" width="80" height="30" fill="#BAE1FF" stroke="black" />
+            <text x="115" y="130">ポインタB</text>
+            <path d="M50,140 L50,170 L100,170 L100,50" fill="none" stroke="black" stroke-dasharray="5,5" />
+            <path d="M150,140 L150,190 L200,190 L200,90" fill="none" stroke="black" stroke-dasharray="5,5" />
+        </g>
+    </svg>
+
+    <h2>3. 操作の比較</h2>
+
+    <table>
+        <tr>
+            <th>実装</th>
+            <th>操作手順</th>
+            <th>効率性</th>
+        </tr>
+        <tr>
+            <td>スタックベース (swap1)</td>
+            <td>
+                1. 一時バッファにAをコピー<br>
+                2. AにBをコピー<br>
+                3. Bに一時バッファをコピー
+            </td>
+            <td>データサイズに比例して遅くなる</td>
+        </tr>
+        <tr>
+            <td>ヒープベース (swap2)</td>
+            <td>
+                1. ヒープ上に一時バッファを確保<br>
+                2. 一時バッファにAをコピー<br>
+                3. AにBをコピー<br>
+                4. Bに一時バッファをコピー<br>
+                5. 一時バッファを解放
+            </td>
+            <td>データサイズに比例して遅くなる<br>メモリ割り当てのオーバーヘッドあり</td>
+        </tr>
+        <tr>
+            <td>queueベース (swap3)</td>
+            <td>
+                1. ポインタAとポインタBを交換
+            </td>
+            <td>データサイズに関係なく一定時間</td>
+        </tr>
+    </table>
+
+    <h2>4. なぜqueueベース (swap3) が効率的か</h2>
+
+    <ol>
+        <li><strong>データコピーの回避：</strong> 実際のデータをコピーせず、ポインタのみを交換します。</li>
+        <li><strong>一定時間操作：</strong> データサイズに関係なく、常に同じ時間で操作が完了します。</li>
+        <li><strong>メモリアクセスの最小化：</strong> ポインタの交換のみなので、大量のメモリアクセスを避けられます。</li>
+        <li><strong>追加のメモリ割り当て不要：</strong> 一時的なバッファを必要としないため、メモリ管理のオーバーヘッドがありません。</li>
+        <li><strong>キャッシュ効率：</strong> 少ないメモリアクセスは、キャッシュの効率的な利用につながります。</li>
+    </ol>
+
+    <h2>5. なぜ他のSwap実装がQueueベースと比べて遅いのか</h2>
+
+    <h3>5.1 スタックベース (swap1) の問題点</h3>
+
+    <svg width="600" height="300" xmlns="http://www.w3.org/2000/svg">
+        <style>
+            text { font-family: Arial; font-size: 14px; }
+            .title { font-weight: bold; font-size: 16px; }
+        </style>
+        
+        <text x="10" y="20" class="title">スタックベース (swap1) の動作</text>
+        
+        <!-- データA -->
+        <rect x="10" y="40" width="180" height="40" fill="#FFB3BA" stroke="black" />
+        <text x="15" y="65">データA</text>
+        
+        <!-- データB -->
+        <rect x="10" y="90" width="180" height="40" fill="#BAFFC9" stroke="black" />
+        <text x="15" y="115">データB</text>
+        
+        <!-- 一時バッファ -->
+        <rect x="10" y="140" width="180" height="40" fill="#BAE1FF" stroke="black" />
+        <text x="15" y="165">一時バッファ</text>
+        
+        <!-- 矢印 -->
+        <defs>
+            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" />
+            </marker>
+        </defs>
+        
+        <line x1="200" y1="60" x2="280" y2="160" stroke="#000" stroke-width="2" marker-end="url(#arrowhead)" />
+        <text x="220" y="100">コピー1</text>
+        
+        <line x1="200" y1="110" x2="280" y2="60" stroke="#000" stroke-width="2" marker-end="url(#arrowhead)" />
+        <text x="220" y="100">コピー2</text>
+        
+        <line x1="200" y1="160" x2="280" y2="110" stroke="#000" stroke-width="2" marker-end="url(#arrowhead)" />
+        <text x="220" y="150">コピー3</text>
+    </svg>
+
+    <p>
+    スタックベースの実装が遅い主な理由：
+    </p>
+    <ol>
+        <li><strong>多数のメモリコピー操作：</strong> データを3回コピーする必要があります。これは特に大きなデータサイズで非常にコストが高くなります。</li>
+        <li><strong>キャッシュ効率の悪さ：</strong> 大量のメモリアクセスにより、キャッシュミスが頻繁に発生し、性能が低下します。</li>
+        <li><strong>データサイズに比例する実行時間：</strong> コピー操作の回数がデータサイズに直接比例するため、大きなデータでは著しく遅くなります。</li>
+    </ol>
+
+    <h3>5.2 ヒープベース (swap2) の問題点</h3>
+
+    <svg width="600" height="350" xmlns="http://www.w3.org/2000/svg">
+        <text x="10" y="20" class="title">ヒープベース (swap2) の動作</text>
+        
+        <!-- データA -->
+        <rect x="10" y="40" width="180" height="40" fill="#FFB3BA" stroke="black" />
+        <text x="15" y="65">データA</text>
+        
+        <!-- データB -->
+        <rect x="10" y="90" width="180" height="40" fill="#BAFFC9" stroke="black" />
+        <text x="15" y="115">データB</text>
+        
+        <!-- 動的割り当てバッファ -->
+        <rect x="10" y="140" width="180" height="40" fill="#BAE1FF" stroke="black" />
+        <text x="15" y="165">動的割り当てバッファ</text>
+        
+        <!-- メモリ割り当て -->
+        <line x1="200" y1="160" x2="280" y2="160" stroke="#000" stroke-width="2" marker-end="url(#arrowhead)" />
+        <text x="210" y="155">メモリ割り当て</text>
+        
+        <!-- コピー操作 -->
+        <line x1="200" y1="60" x2="280" y2="160" stroke="#000" stroke-width="2" marker-end="url(#arrowhead)" />
+        <text x="220" y="100">コピー1</text>
+        
+        <line x1="200" y1="110" x2="280" y2="60" stroke="#000" stroke-width="2" marker-end="url(#arrowhead)" />
+        <text x="220" y="100">コピー2</text>
+        
+        <line x1="200" y1="160" x2="280" y2="110" stroke="#000" stroke-width="2" marker-end="url(#arrowhead)" />
+        <text x="220" y="150">コピー3</text>
+        
+        <!-- メモリ解放 -->
+        <line x1="200" y1="190" x2="280" y2="190" stroke="#000" stroke-width="2" marker-end="url(#arrowhead)" />
+        <text x="210" y="185">メモリ解放</text>
+    </svg>
+
+    <p>
+    ヒープベースの実装が遅い主な理由：
+    </p>
+    <ol>
+        <li><strong>動的メモリ割り当てのオーバーヘッド：</strong> 一時バッファのための malloc() と free() 呼び出しが必要で、これらの操作は比較的コストが高いです。</li>
+        <li><strong>多数のメモリコピー操作：</strong> スタックベースと同様に、データを3回コピーする必要があります。</li>
+        <li><strong>キャッシュ効率の悪さ：</strong><li><strong>キャッシュ効率の悪さ：</strong> 動的に割り当てられたメモリは、連続したメモリ領域にない可能性が高く、キャッシュの効率を下げます。</li>
+        <li><strong>メモリフラグメンテーション：</strong> 頻繁なメモリの割り当てと解放は、長期的にメモリフラグメンテーションを引き起こす可能性があります。</li>
+    </ol>
+
+    <h3>5.3 Queueベース (swap3) との比較</h3>
+
+    <svg width="600" height="250" xmlns="http://www.w3.org/2000/svg">
+        <text x="10" y="20" class="title">Queueベース (swap3) の動作</text>
+        
+        <!-- データA -->
+        <rect x="10" y="40" width="180" height="40" fill="#FFB3BA" stroke="black" />
+        <text x="15" y="65">データA</text>
+        
+        <!-- データB -->
+        <rect x="10" y="90" width="180" height="40" fill="#BAFFC9" stroke="black" />
+        <text x="15" y="115">データB</text>
+        
+        <!-- ポインタA -->
+        <rect x="10" y="140" width="80" height="30" fill="#BAE1FF" stroke="black" />
+        <text x="15" y="160">ポインタA</text>
+        
+        <!-- ポインタB -->
+        <rect x="110" y="140" width="80" height="30" fill="#BAE1FF" stroke="black" />
+        <text x="115" y="160">ポインタB</text>
+        
+        <!-- ポインタ交換 -->
+        <path d="M50,170 Q90,200 130,170" fill="none" stroke="#000" stroke-width="2" marker-end="url(#arrowhead)" />
+        <text x="70" y="210">ポインタ交換</text>
+    </svg>
+
+    <p>
+    Queueベースの実装が効率的な理由：
+    </p>
+    <ol>
+        <li><strong>データコピーの回避：</strong> 実際のデータをコピーする代わりに、ポインタのみを交換します。</li>
+        <li><strong>一定時間操作：</strong> ポインタの交換はデータサイズに関係なく一定時間で完了します。</li>
+        <li><strong>メモリアクセスの最小化：</strong> ポインタの交換のみなので、大量のメモリアクセスを避けられます。</li>
+        <li><strong>追加のメモリ割り当て不要：</strong> 一時的なバッファを必要とせず、メモリ管理のオーバーヘッドがありません。</li>
+        <li><strong>キャッシュ効率：</strong> 少ないメモリアクセスにより、キャッシュの効率的な利用が可能です。</li>
+    </ol>
+
+    <h2>6. 結論</h2>
+
+    <p>
+    スタックベースとヒープベースの実装は、データのコピーに依存しているため、データサイズが大きくなるにつれて性能が著しく低下します。
+    一方、Queueベースの実装は、データの実体を移動せずにポインタを交換するだけなので、データサイズに関係なく高速に動作します。
+    これにより、特に大きなデータサイズを扱う際に、Queueベースの実装が他の2つの方法と比較して圧倒的に高速になります。
+    </p>
+
+    <p>
+    ただし、Queueベースの実装には以下の制限があることに注意が必要です：
+    </p>
+    <ul>
+        <li>データ構造がリスト形式である必要があります。</li>
+        <li>ポインタを使用するため、データの所有権や生存期間の管理に注意が必要です。</li>
+        <li>実際のデータの内容ではなく、データへの参照のみが交換されるため、意図しない副作用が生じる可能性があります。</li>
+    </ul>
+
+    <p>
+    したがって、適切な使用場面を考慮しつつ、Queueベースの実装を活用することで、大幅な性能向上を実現できます。
+    特に大規模なデータ処理や高頻度の交換操作が必要な場面では、Queueベースの実装が非常に有効です。
+    </p>
+
+    <pre><code class="prettyprint">
+#include &lt;sys/types.h&gt;
+#include &lt;sys/queue.h&gt;
+
+#include &lt;err.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;time.h&gt;
+
+
+struct listitem {
+	char		*data;
+	size_t		 size;
+	LIST_ENTRY(listitem) entries;
+};
+
+LIST_HEAD(listhead, listitem);
+
+void	 swap1(void *, void *, size_t);
+void	 swap2(void *, void *, size_t);
+void	 swap3(struct listitem *, struct listitem *);
+void	 benchmark12(void (*)(void *, void *, size_t), size_t, int);
+void	 benchmark3(size_t, int);
+
+/*
+ * Stack-based swap function.
+ */
+void
+swap1(void *a, void *b, size_t size)
+{
+	char	 temp[size];
+	char	*pa = a, *pb = b;
+	size_t	 i;
+	
+	for (i = 0; i < size; i++) {
+		temp[i] = pa[i];
+		pa[i] = pb[i];
+		pb[i] = temp[i];
+	}
+}
+
+/*
+ * Heap-based swap function.
+ */
+void
+swap2(void *a, void *b, size_t size)
+{
+	char	*temp;
+
+	if ((temp = malloc(size)) == NULL)
+		err(1, NULL);
+	memcpy(temp, a, size);
+	memcpy(a, b, size);
+	memcpy(b, temp, size);
+	free(temp);
+}
+
+/*
+ * sys/queue.h-based swap function.
+ */
+void
+swap3(struct listitem *a, struct listitem *b)
+{
+	char	*temp_data;
+	size_t	 temp_size;
+
+	temp_data = a->data;
+	a->data = b->data;
+	b->data = temp_data;
+
+	temp_size = a->size;
+	a->size = b->size;
+	b->size = temp_size;
+}
+
+/*
+ * Benchmark function for swap1 and swap2.
+ */
+void
+benchmark12(void (*swap_func)(void *, void *, size_t), size_t size, int iterations)
+{
+	char		*a, *b;
+	clock_t		 start, end;
+	double		 cpu_time_used;
+
+	if ((a = malloc(size)) == NULL)
+		err(1, "Failed to allocate memory for a");
+	if ((b = malloc(size)) == NULL)
+		err(1, "Failed to allocate memory for b");
+	
+	memset(a, 'A', size);
+	memset(b, 'B', size);
+
+	start = clock();
+	for (int i = 0; i < iterations; i++)
+		swap_func(a, b, size);
+	end = clock();
+
+	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+	printf("Size: %zu bytes, Iterations: %d, Time: %f seconds\n",
+	    size, iterations, cpu_time_used);
+
+	free(a);
+	free(b);
+}
+
+/*
+ * Benchmark function for swap3.
+ */
+void
+benchmark3(size_t size, int iterations)
+{
+	struct listhead	 head;
+	struct listitem	*item1, *item2;
+	clock_t		 start, end;
+	double		 cpu_time_used;
+
+	LIST_INIT(&head);
+
+	if ((item1 = malloc(sizeof(struct listitem))) == NULL)
+		err(1, "Failed to allocate memory for item1");
+
+	if ((item2 = malloc(sizeof(struct listitem))) == NULL)
+		err(1, "Failed to allocate memory for item2");
+
+	if ((item1->data = malloc(size)) == NULL)
+		err(1, "Failed to allocate memory for item1->data");
+	if ((item2->data = malloc(size)) == NULL)
+		err(1, "Failed to allocate memory for item2->data");
+	item1->size = item2->size = size;
+
+	memset(item1->data, 'A', size);
+	memset(item2->data, 'B', size);
+
+	LIST_INSERT_HEAD(&head, item1, entries);
+	LIST_INSERT_AFTER(item1, item2, entries);
+
+	start = clock();
+	for (int i = 0; i < iterations; i++)
+		swap3(item1, item2);
+	end = clock();
+
+	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+	printf("Size: %zu bytes, Iterations: %d, Time: %f seconds\n",
+	    size, iterations, cpu_time_used);
+
+	free(item1->data);
+	free(item2->data);
+	free(item1);
+	free(item2);
+}
+
+int
+main(void)
+{
+	size_t	sizes[] = { 8, 64, 512, 4096, 32768 };
+	int	num_sizes = sizeof(sizes) / sizeof(sizes[0]);
+	int	iterations = 1000000;
+
+	printf("Testing swap1 (stack-based):\n");
+	for (int i = 0; i < num_sizes; i++)
+		benchmark12(swap1, sizes[i], iterations);
+
+	printf("\nTesting swap2 (heap-based):\n");
+	for (int i = 0; i < num_sizes; i++)
+		benchmark12(swap2, sizes[i], iterations);
+
+	printf("\nTesting swap3 (sys/queue.h-based):\n");
+	for (int i = 0; i < num_sizes; i++)
+		benchmark3(sizes[i], iterations);
+
+	return 0;
+}
+    </code></pre>
+
+</body>
+</html>
